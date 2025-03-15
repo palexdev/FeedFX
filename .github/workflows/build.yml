@@ -4,12 +4,7 @@ on:
   workflow_call: { }
 
 jobs:
-  format-code:
-    name: Format code
-    uses: ./.github/workflows/intellij-format.yml
-
   build:
-    needs: format-code
     runs-on: ubuntu-latest
     steps:
       - name: Clone repo

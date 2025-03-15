@@ -25,6 +25,7 @@ module FeedFX {
     requires com.twelvemonkeys.imageio.webp;
     requires ImCache;
     requires java.sql;
+    requires org.xerial.sqlitejdbc;
     requires com.rometools.rome;
     requires com.rometools.rome.modules;
 

@@ -161,7 +161,7 @@ jlink {
 
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
     launcher {
-        name = 'ArchitectFX'
+        name = 'FeedFX'
     }
 
     addExtraDependencies("javafx")
@@ -169,6 +169,15 @@ jlink {
     forceMerge("slf4j")
 
     mergedModule {
+        requires 'java.management';
+        requires 'java.naming';
+        requires 'java.logging';
+        requires 'java.sql';
+        requires 'java.prefs';
+        requires 'java.xml';
+        requires 'java.desktop';
+        requires 'java.datatransfer';
+        requires 'jdk.unsupported';
         uses 'org.slf4j.spi.SLF4JServiceProvider';
         uses 'org.tinylog.policies.Policy';
         uses 'org.tinylog.converters.FileConverter';
@@ -179,10 +188,20 @@ jlink {
         provides 'org.tinylog.provider.LoggingProvider' with 'org.tinylog.core.TinylogLoggingProvider';
         provides 'org.slf4j.spi.SLF4JServiceProvider' with 'org.tinylog.slf4j.TinylogSlf4jServiceProvider';
         provides 'org.tinylog.configuration.ConfigurationLoader' with 'org.tinylog.configuration.PropertiesConfigurationLoader';
+        provides 'javax.imageio.spi.ImageInputStreamSpi' with 'com.twelvemonkeys.imageio.color.ProfileDeferralActivator.Spi',
+                'com.twelvemonkeys.imageio.stream.BufferedFileImageInputStreamSpi',
+                'com.twelvemonkeys.imageio.stream.BufferedInputStreamImageInputStreamSpi',
+                'com.twelvemonkeys.imageio.stream.BufferedRAFImageInputStreamSpi';
+        provides 'javax.imageio.spi.ImageWriterSpi' with 'com.twelvemonkeys.imageio.plugins.bmp.BMPImageWriterSpi',
+                'com.twelvemonkeys.imageio.plugins.bmp.ICOImageWriterSpi';
+        provides 'javax.imageio.spi.ImageReaderSpi' with 'com.twelvemonkeys.imageio.plugins.bmp.BMPImageReaderSpi',
+                'com.twelvemonkeys.imageio.plugins.bmp.CURImageReaderSpi',
+                'com.twelvemonkeys.imageio.plugins.bmp.ICOImageReaderSpi',
+                'com.twelvemonkeys.imageio.plugins.webp.WebPImageReaderSpi';
     }
 
     jpackage {
-        appVersion = "$appVersion"
+        appVersion = "$appVer"
         installerName = 'FeedFX'
         description = 'FeedFX is a desktop app made with JavaFX to read articles from RSS feeds and keep them organized'
         vendor = 'palexdev'
