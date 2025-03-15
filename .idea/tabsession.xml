@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SessionConfiguration">
+    <state version="1" />
+    <sessions>
+      <session name="Last">
+        <files focusedFile="$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/model/AppModel.java">
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/events/ModelEvent.java</file>
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/model/DBManager.java</file>
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/ui/controllers/UIController.java</file>
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/ui/components/selection/SelectionModel.java</file>
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/model/FeedsSource.java</file>
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/model/AppModel.java</file>
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/ui/components/SelectableList.java</file>
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/FeedFX.java</file>
+          <file>$PROJECT_DIR$/src/main/java/io/github/palexdev/feedfx/ui/components/FeedsSourceCell.java</file>
+        </files>
+      </session>
+    </sessions>
+  </component>
+</project>

@@ -1,0 +1,72 @@
+.tag-menu {
+  -fx-alignment: TOP_CENTER;
+  -fx-background-color: -md-sys-color-surface-container-low;
+  -fx-background-insets: 1px;
+  -fx-background-radius: 12px;
+  -fx-border-color: -md-sys-color-primary;
+  -fx-border-radius: 12px;
+  -fx-min-width: 240px;
+  -fx-min-height: 300px;
+  -fx-padding: 8px;
+  -fx-spacing: 12px;
+}
+
+.tag-menu > .label {
+  -fx-alignment: CENTER;
+  -fx-border-color: transparent transparent -md-sys-color-primary transparent;
+  -fx-border-insets: -4px -8px -4px -8px;
+  -fx-font-family: 'MontSerrat SemiBold';
+  -fx-font-size: 14px;
+  -fx-text-fill: -md-sys-color-on-surface;
+}
+
+.tag-menu > .vfx-scroll-pane {
+  -vfx-autohide-bars: true;
+  -vfx-tag-menu-mode: COMPACT;
+  -vfx-smooth-scroll: true;
+}
+
+.tag-menu > .vfx-scroll-pane .vfx-list .cell > .label {
+  -fx-font-family: 'MontSerrat Medium';
+  -fx-font-size: 14px;
+  -fx-graphic-text-gap: 12px;
+  -fx-text-fill: -md-sys-color-on-surface;
+}
+
+.tag-menu > .vfx-scroll-pane .vfx-list {
+  -vfx-cell-size: 40px;
+  -vfx-v-spacing: 12px;
+}
+
+.tag-menu > .vfx-scroll-pane .vfx-list .cell > .label > HBox {
+  -fx-alignment: CENTER_LEFT;
+  -fx-spacing: 8px;
+}
+
+.tag-menu > .vfx-scroll-pane .vfx-list .cell > .label > HBox > .mfx-font-icon {
+  -mfx-description: 'fas-tag';
+}
+
+.tag-menu > .actions {
+  -fx-alignment: CENTER_RIGHT;
+  -fx-spacing: 12px;
+}
+
+.tag-menu > .actions > .mfx-button {
+  -fx-font-family: "MontSerrat Medium";
+  -fx-font-size: 12px;
+  -fx-padding: 4px 8px 4px 8px;
+}
+
+.tag-menu > .actions > .mfx-button,
+.tag-menu > .actions > .mfx-button > .surface > .bg {
+  -fx-background-radius: 12px;
+}
+
+.tag-menu .actions > .mfx-button.cancel {
+  -fx-text-fill: -md-sys-color-err;
+}
+
+.tag-menu .actions > .mfx-button.cancel > .surface > .bg {
+  -fx-background-color: -md-sys-color-err;
+}

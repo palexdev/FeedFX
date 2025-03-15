@@ -1,0 +1,39 @@
+.imports {
+  'io.github.palexdev.mfxcomponents.controls.buttons.MFXButton',
+  'io.github.palexdev.mfxcore.controls.Label',
+  'io.github.palexdev.virtualizedfx.controls.VFXScrollPane',
+  'io.github.palexdev.feedfx.ui.components.SelectableList',
+  'javafx.scene.layout.HBox',
+  'javafx.scene.layout.Priority',
+  'javafx.scene.layout.VBox'
+}
+
+VBox {
+  styleClass = listOf('tag-menu')
+  stylesheets = listOf(url('css/TagMenu.css'))
+
+  Label::("Available Tags") {
+    maxWidth: Double.MAX_VALUE
+  }
+
+  VFXScrollPane {
+    VBox.setVgrow(this, Priority.ALWAYS)
+    content: SelectableList {
+      .cid: 'tagsList'
+    }
+  }
+
+  HBox {
+    styleClass = listOf('actions')
+
+    MFXButton::('Confirm') {
+      .cid: 'confirmButton'
+      this.filled()
+    }
+    MFXButton::('Cancel') {
+      .cid: 'cancelButton'
+      styleClass += listOf('cancel')
+      this.text()
+    }
+  }
+}

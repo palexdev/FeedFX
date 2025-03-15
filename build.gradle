@@ -1,0 +1,107 @@
+plugins {
+    id 'application'
+    id 'java'
+    id 'org.openjfx.javafxplugin' version "$jfxPlugin"
+    id 'org.beryx.jlink' version "$jlink"
+    id 'com.gradleup.shadow' version "$shadow"
+}
+
+group = 'palexdev'
+version = "$version"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    flatDir {
+        dirs "$rootDir/libs"
+    }
+}
+
+dependencies {
+    // Standard
+    // Inverno Framework :D
+    annotationProcessor "io.inverno:inverno-core-compiler:$inverno"
+    implementation "io.inverno:inverno-core:$inverno"
+
+    implementation "com.rometools:rome:$rome"
+    implementation "com.rometools:rome-modules:$rome"
+    implementation "org.xerial:sqlite-jdbc:$sqlite"
+
+    // UI
+    implementation "io.github.palexdev:architectfx:$architectfx"
+    implementation "io.github.palexdev:mfxcore:$mfxcore"
+    implementation "io.github.palexdev:mfxcomponents:$materialfx"
+    implementation "io.github.palexdev:virtualizedfx:$virtualizedfx"
+    implementation "io.github.palexdev:rectcut-java:$rectcut"
+    implementation "io.github.palexdev:imcache:$imcache"
+    implementation "com.twelvemonkeys.imageio:imageio-bmp:$imageio"
+    implementation "com.twelvemonkeys.imageio:imageio-webp:$imageio"
+
+    // Logging
+    implementation "org.tinylog:tinylog-impl:$tinylog"
+    implementation "org.tinylog:slf4j-tinylog:$tinylog"
+    implementation 'org.apache.logging.log4j:log4j-to-slf4j:3.0.0-beta2'
+
+    // Test
+    testImplementation platform("org.junit:junit-bom:$junit")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+application {
+    mainModule = 'FeedFX'
+    mainClass = 'io.github.palexdev.feedfx.FeedFX'
+}
+
+java {
+    sourceCompatibility = "$jdk"
+    targetCompatibility = "$jdk"
+    withJavadocJar()
+    withSourcesJar()
+}
+
+javafx {
+    version = "$jfx"
+    configurations = ['implementation', 'testImplementation']
+    modules = ['javafx.fxml', 'javafx.graphics', 'javafx.swing']
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Since we are using a compile time DI framework, everytime the code changes
+compileJava {
+    doFirst {
+        if (!classes.state.upToDate)
+            clean
+    }
+}
+
+tasks.register('zipAssets', Zip) {
+    delete(file("src/main/resources/io/github/palexdev/feedfx/assets/assets.zip"))
+
+    destinationDirectory = file("src/main/resources/io/github/palexdev/feedfx/assets")
+    archiveFileName = "assets.zip"
+
+    from "src/main/resources/io/github/palexdev/feedfx/css"
+    from ("src/main/resources/io/github/palexdev/feedfx/fonts") {
+        into "fonts"
+    }
+    from ("src/main/resources/io/github/palexdev/feedfx/assets") {
+        exclude "assets.zip"
+        into "assets"
+    }
+
+    outputs.upToDateWhen { false }
+
+    doLast {
+        copy {
+            from archiveFile
+            into "${file(layout.buildDirectory)}/resources/main/io/github/palexdev/feedfx/assets"
+        }
+    }
+}
+
+sourcesJar.dependsOn(zipAssets)
+processResources.finalizedBy(zipAssets)

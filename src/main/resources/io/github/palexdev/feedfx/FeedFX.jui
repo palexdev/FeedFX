@@ -1,0 +1,153 @@
+.imports {
+  'io.github.palexdev.feedfx.ui.components.SelectableList',
+  'io.github.palexdev.feedfx.ui.controllers.UIController',
+  'io.github.palexdev.mfxcomponents.controls.buttons.MFXIconButton',
+  'io.github.palexdev.mfxcomponents.controls.progress.MFXProgressIndicator',
+  'io.github.palexdev.mfxcomponents.controls.progress.ProgressDisplayMode',
+  'io.github.palexdev.mfxresources.fonts.MFXFontIcon',
+  'io.github.palexdev.virtualizedfx.controls.VFXScrollPane',
+  'io.github.palexdev.virtualizedfx.grid.VFXGrid',
+  'javafx.scene.control.Label',
+  'javafx.scene.control.Separator',
+  'javafx.scene.image.ImageView',
+  'javafx.scene.layout.HBox',
+  'javafx.scene.layout.Priority',
+  'javafx.scene.layout.Region',
+  'javafx.scene.layout.StackPane',
+  'javafx.scene.layout.VBox',
+  'javafx.scene.text.Text'
+}
+
+.controller: UIController {
+  appModel: $appModel$
+  mainWindow: $mainWindow$
+}
+
+StackPane {
+  .cid: 'root'
+  prefWidth: 900.0
+  prefHeight: 600.0
+  styleClass = listOf('root-pane')
+  stylesheets = listOf(url('css/FeedFX.css'))
+
+  VBox {
+    styleClass = listOf('layout')
+
+    # Header
+    HBox {
+      styleClass = listOf('window-header')
+
+      ImageView {
+        .cid: 'iw'
+        styleClass = listOf('logo')
+      }
+
+      Text::('FeedFX') {}
+
+      Region {
+        .cid: 'separator'
+        HBox.setHgrow(this, Priority.ALWAYS)
+      }
+
+      MFXFontIcon {
+        .cid: 'aotIcon'
+        styleClass += listOf('aot-icon')
+      }
+      MFXFontIcon {
+        .cid: 'minIcon'
+        styleClass += listOf('minimize-icon')
+      }
+      MFXFontIcon {
+        .cid: 'maxIcon'
+        styleClass += listOf('maximize-icon')
+      }
+      MFXFontIcon {
+        .cid: 'clsIcon'
+        styleClass += listOf('close-icon')
+      }
+    }
+
+    # Container
+    HBox {
+      VBox.setVgrow(this, Priority.ALWAYS)
+      styleClass = listOf('content')
+
+      # Sidebar
+      VBox {
+        .cid: 'sidebar'
+        styleClass = listOf('sidebar')
+
+        # Feeds
+        HBox {
+          Label::('Feeds') {
+            HBox.setHgrow(this, Priority.ALWAYS)
+            maxHeight: Double.MAX_VALUE
+            maxWidth: Double.MAX_VALUE
+          }
+          MFXIconButton {
+            .cid: 'addSrcButton'
+          }
+          MFXIconButton {
+            .cid: 'syncButton'
+            styleClass += listOf('sync')
+          }
+          MFXIconButton {
+            .cid: 'showReadButton'
+            styleClass += listOf('show')
+            this.asToggle()
+          }
+        }
+
+        VFXScrollPane {
+          VBox.setVgrow(this, Priority.ALWAYS)
+          content: SelectableList {
+            .cid: 'sourcesList'
+            styleClass += listOf('sources-list')
+          }
+        }
+
+        # Tags
+        Separator {}
+        HBox {
+          Label::('Tags') {
+            HBox.setHgrow(this, Priority.ALWAYS)
+            maxHeight: Double.MAX_VALUE
+            maxWidth: Double.MAX_VALUE
+          }
+          MFXIconButton {
+            .cid: 'addTagButton'
+          }
+        }
+
+        VFXScrollPane {
+          VBox.setVgrow(this, Priority.ALWAYS)
+          content: SelectableList {
+            .cid: 'tagsList'
+            styleClass += listOf('tags-list')
+          }
+        }
+      }
+
+      # Content
+      StackPane {
+        HBox.setHgrow(this, Priority.ALWAYS)
+
+        VFXScrollPane {
+          content: VFXGrid {
+            .cid: 'feedsGrid'
+          }
+        }
+
+        StackPane {
+          .cid: 'scrim'
+          styleClass = listOf('scrim')
+        }
+
+        MFXProgressIndicator {
+          .cid: 'syncIndicator'
+          displayMode: ProgressDisplayMode.CIRCULAR
+        }
+      }
+    }
+  }
+}

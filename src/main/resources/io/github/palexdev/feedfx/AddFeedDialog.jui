@@ -1,0 +1,49 @@
+.imports {
+  'io.github.palexdev.mfxcomponents.controls.buttons.MFXButton',
+  'io.github.palexdev.mfxresources.fonts.MFXFontIcon',
+  'javafx.scene.control.Label',
+  'javafx.scene.control.TextField',
+  'javafx.scene.layout.HBox',
+  'javafx.scene.layout.Priority',
+  'javafx.scene.layout.StackPane',
+  'javafx.scene.layout.VBox'
+}
+
+.controller: AddFeedDialog$Controller {}
+
+VBox {
+  styleClass = listOf('add-dialog')
+  stylesheets = listOf(url('css/AddDialog.css'))
+
+  StackPane {
+    .cid: 'header'
+    Label::('Add New Feed') {
+      graphic: MFXFontIcon {
+        description: 'fas-square-rss'
+      }
+    }
+  }
+
+  TextField {
+    .cid: 'nameField'
+    promptText: 'Name'
+  }
+  TextField {
+    .cid: 'urlField'
+    promptText: 'URL'
+  }
+
+  HBox {
+    VBox.setVgrow(this, Priority.ALWAYS)
+    styleClass = listOf('actions')
+
+    MFXButton::('Add') {
+      .cid: 'addButton'
+      this.filled()
+    }
+    MFXButton::('Cancel') {
+      .cid: 'cancelButton'
+      this.text()
+    }
+  }
+}
