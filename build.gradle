@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'palexdev'
-version = "$version"
+version = "$appVer"
 
 repositories {
     mavenCentral()
@@ -62,6 +62,16 @@ java {
     withSourcesJar()
 }
 
+tasks.withType(Javadoc) {
+    javadocTool.set(
+            javaToolchains.javadocToolFor(
+                    java.toolchain
+            )
+    )
+    failOnError = false
+    options.addBooleanOption('Xdoclint:all,-missing', true)
+}
+
 javafx {
     version = "$jfx"
     configurations = ['implementation', 'testImplementation']
@@ -72,14 +82,32 @@ test {
     useJUnitPlatform()
 }
 
-// Since we are using a compile time DI framework, everytime the code changes
+// Compile-time DI configuration
+def generatedSources = "${file(layout.buildDirectory)}/generated/sources"
+def generatedOutputDir = file("$generatedSources")
+
 compileJava {
     doFirst {
-        if (!classes.state.upToDate)
-            clean
+        delete generatedOutputDir
+        generatedOutputDir.mkdirs()
+        options.compilerArgs = [
+                '-s', "${generatedSources}"
+        ]
     }
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs += generatedOutputDir
+        }
+    }
+}
+
+sourcesJar.dependsOn(compileJava)
+compileTestJava.dependsOn(sourcesJar)
+
+/* Pack assets for deploy */
 tasks.register('zipAssets', Zip) {
     delete(file("src/main/resources/io/github/palexdev/feedfx/assets/assets.zip"))
 
