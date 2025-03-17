@@ -112,7 +112,7 @@ public class AppModel {
     public void open(Feed feed) {
         /* TODO Add in-app browser popup */
         hostServices.showDocument(feed.link());
-        markFeedAs(feed, !feed.read());
+        markFeedAs(feed, true);
     }
 
     public void markFeedAs(Feed feed, boolean read) {
