@@ -212,6 +212,7 @@ jlink {
                     "--win-help-url", "https://github.com/palexdev/FeedFX",
                     "--win-dir-chooser",
                     "--win-menu",
+                    "--win-menu-group", "palexdev",
                     "--win-per-user-install",
                     "--win-shortcut",
                     "--win-shortcut-prompt",
