@@ -105,7 +105,10 @@ public class AppModel {
 
     public void refresh(boolean force) {
         fetch().thenAccept(u -> {
-            if (u || force) update();
+            if (u || force) {
+                update();
+            }
+            setUpdating(false);
         });
     }
 
