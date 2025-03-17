@@ -34,24 +34,26 @@ public class DBManager {
             Connection connection = connect();
             PreparedStatement stmt = connection.prepareStatement("""
                 SELECT f.source_id, f.title, f.link, f.image, f.date, f.isRead FROM feeds f
-                WHERE (? = -1 OR f.source_id = ?) AND f.isRead = ? AND (
+                WHERE (? = -1 OR f.source_id = ?) AND (? IS NULL OR f.isRead = ?) AND (
                     ? IS NULL OR f.id IN (
                         SELECT feed_id FROM feed_tags WHERE tag_id = ?
                     )
                 )
                 """);
         ) {
-            boolean doShowRead = tag != null || showRead;
 
             stmt.setInt(1, source.id());
             stmt.setInt(2, source.id());
-            stmt.setBoolean(3, doShowRead);
             if (tag != null) {
-                stmt.setInt(4, tag.id());
+                stmt.setNull(3, Types.NULL);
+                stmt.setNull(4, Types.NULL);
                 stmt.setInt(5, tag.id());
+                stmt.setInt(6, tag.id());
             } else {
-                stmt.setNull(4, Types.INTEGER);
+                stmt.setBoolean(3, showRead);
+                stmt.setBoolean(4, showRead);
                 stmt.setNull(5, Types.INTEGER);
+                stmt.setNull(6, Types.INTEGER);
             }
 
             try (ResultSet rs = stmt.executeQuery()) {
