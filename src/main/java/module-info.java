@@ -11,6 +11,7 @@ module FeedFX {
     requires mfx.components;
     requires VirtualizedFX;
     requires rectcut;
+    requires com.dustinredmond.fxtrayicon;
 
     // DI
     requires io.inverno.core;

@@ -39,6 +39,7 @@ dependencies {
     implementation "io.github.palexdev:imcache:$imcache"
     implementation "com.twelvemonkeys.imageio:imageio-bmp:$imageio"
     implementation "com.twelvemonkeys.imageio:imageio-webp:$imageio"
+    implementation "com.dustinredmond.fxtrayicon:FXTrayIcon:$fxtray"
 
     // Logging
     implementation "org.tinylog:tinylog-impl:$tinylog"
