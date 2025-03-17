@@ -39,7 +39,7 @@ public class DBManager {
                         SELECT feed_id FROM feed_tags WHERE tag_id = ?
                     )
                 )
-                """);
+                """)
         ) {
 
             stmt.setInt(1, source.id());
@@ -81,7 +81,7 @@ public class DBManager {
             Connection connection = connect();
             PreparedStatement stmt = connection.prepareStatement(
                 "INSERT OR IGNORE INTO feeds (title, link, image, date, isRead, source_id) VALUES (?, ?, ?, ?, ?, ?)"
-            );
+            )
         ) {
             for (Feed feed : feeds) {
                 stmt.setString(1, feed.title());
