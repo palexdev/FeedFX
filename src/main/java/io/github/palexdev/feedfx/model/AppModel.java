@@ -2,6 +2,7 @@ package io.github.palexdev.feedfx.model;
 
 import io.github.palexdev.architectfx.backend.utils.Async;
 import io.github.palexdev.feedfx.events.ModelEvent;
+import io.github.palexdev.feedfx.events.UIEvent;
 import io.github.palexdev.feedfx.utils.RefineList;
 import io.github.palexdev.mfxcore.events.bus.IEventBus;
 import io.inverno.core.annotation.Bean;
@@ -19,12 +20,14 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.tinylog.Logger;
 
 @Bean
 public class AppModel {
     //================================================================================
     // Properties
     //================================================================================
+    private final IEventBus bus;
     private final DBManager dbManager;
     private final FeedHandler feedHandler;
     private final HostServices hostServices;
@@ -44,6 +47,7 @@ public class AppModel {
     // Constructors
     //================================================================================
     public AppModel(IEventBus bus, DBManager dbManager, FeedHandler feedHandler, HostServices hostServices) {
+        this.bus = bus;
         this.dbManager = dbManager;
         this.feedHandler = feedHandler;
         this.hostServices = hostServices;
@@ -82,15 +86,15 @@ public class AppModel {
         refresh(true);
     }
 
-    protected CompletableFuture<Boolean> fetch() {
+    protected CompletableFuture<Integer> fetch() {
         setUpdating(true);
         return Async.call(() -> {
-            boolean updated = false;
+            int added = 0;
             for (FeedsSource source : sources.subList(1, sources.size())) { // Exclude ALL
                 List<Feed> feeds = feedHandler.fetch(source);
-                updated |= dbManager.addFeeds(feeds.toArray(Feed[]::new));
+                added += dbManager.addFeeds(feeds.toArray(Feed[]::new));
             }
-            return updated;
+            return added;
         });
     }
 
@@ -104,8 +108,10 @@ public class AppModel {
     }
 
     public void refresh(boolean force) {
-        fetch().thenAccept(u -> {
-            if (u || force) {
+        fetch().thenAccept(added -> {
+            if (added > 0 || force) {
+                Logger.debug("Fetched {} new feeds", added);
+                if (!force) bus.publish(new UIEvent.NotifyEvent("There are %d new feeds!".formatted(added)));
                 update();
             }
             setUpdating(false);

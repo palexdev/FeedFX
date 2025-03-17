@@ -17,5 +17,16 @@ public abstract class UIEvent extends Event {
     // Impl
     //================================================================================
 
+    public static class NotifyEvent extends UIEvent {
+        public NotifyEvent(String message) {
+            super(message);
+        }
+
+        @Override
+        public String data() {
+            return (String) super.data();
+        }
+    }
+
     public static class ThemeSwitchEvent extends UIEvent {}
 }

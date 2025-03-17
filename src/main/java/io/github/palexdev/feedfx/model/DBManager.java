@@ -76,7 +76,7 @@ public class DBManager {
         }
     }
 
-    public boolean addFeeds(Feed... feeds) {
+    public int addFeeds(Feed... feeds) {
         try (
             Connection connection = connect();
             PreparedStatement stmt = connection.prepareStatement(
@@ -95,10 +95,11 @@ public class DBManager {
             }
 
             return Arrays.stream(stmt.executeBatch())
-                .anyMatch(result -> result > 0);
+                .filter(r -> r > 0)
+                .sum();
         } catch (SQLException ex) {
             Logger.error("An error occurred while adding the feeds:\n{}", ex);
-            return false;
+            return 0;
         }
     }
 

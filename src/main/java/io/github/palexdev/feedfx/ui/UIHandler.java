@@ -5,11 +5,15 @@ import io.github.palexdev.architectfx.backend.loaders.UILoader;
 import io.github.palexdev.architectfx.backend.loaders.jui.JUIFXLoader;
 import io.github.palexdev.feedfx.Resources;
 import io.github.palexdev.feedfx.events.AppEvent;
+import io.github.palexdev.feedfx.events.UIEvent;
+import io.github.palexdev.mfxcomponents.window.MFXPlainContent;
+import io.github.palexdev.mfxcomponents.window.popups.MFXPopup;
 import io.github.palexdev.mfxcore.events.bus.IEventBus;
 import io.inverno.core.annotation.Bean;
 import java.io.IOException;
 import java.net.URL;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,12 +33,15 @@ public class UIHandler {
         Resources.loadStream("assets/logo.png")
     );
 
+    private FXTrayIcon trayIcon;
+
     //================================================================================
     // Constructors
     //================================================================================
     public UIHandler(IEventBus bus, Stage mainWindow) {
         this.mainWindow = mainWindow;
         bus.subscribe(AppEvent.AppReadyEvent.class, e -> init());
+        bus.subscribe(UIEvent.NotifyEvent.class, this::notify);
     }
 
     //================================================================================
@@ -68,7 +75,7 @@ public class UIHandler {
             return;
         }
 
-        new FXTrayIcon.Builder(mainWindow, ICON)
+        trayIcon = new FXTrayIcon.Builder(mainWindow, ICON)
             .applicationTitle("FeedFX")
             .addTitleItem(true)
             .addExitMenuItem("Exit", _ -> {
@@ -77,5 +84,18 @@ public class UIHandler {
             })
             .show()
             .build();
+    }
+
+    private void notify(UIEvent.NotifyEvent event) {
+        if (trayIcon != null) {
+            trayIcon.showMessage(event.data());
+            return;
+        }
+
+        MFXPopup popup = new MFXPopup();
+        popup.setContent(new MFXPlainContent(event.data()));
+        mainWindow.setIconified(false);
+        mainWindow.toFront();
+        popup.show(mainWindow, Pos.CENTER);
     }
 }
