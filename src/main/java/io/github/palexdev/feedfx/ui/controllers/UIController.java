@@ -15,6 +15,7 @@ import io.github.palexdev.feedfx.ui.components.dialogs.AddTagDialog;
 import io.github.palexdev.feedfx.ui.components.selection.ISelectionModel;
 import io.github.palexdev.mfxcomponents.controls.buttons.MFXIconButton;
 import io.github.palexdev.mfxcomponents.controls.progress.MFXProgressIndicator;
+import io.github.palexdev.mfxcomponents.theming.enums.PseudoClasses;
 import io.github.palexdev.mfxcore.observables.When;
 import io.github.palexdev.mfxresources.fonts.MFXFontIcon;
 import io.github.palexdev.virtualizedfx.grid.VFXGrid;
@@ -105,7 +106,11 @@ public class UIController implements Initializable {
         tagsList.setCellFactory(TagCell::new);
         tagsList.setItems(appModel.getTags());
         tsModel.setAllowsMultipleSelection(false);
-        tsModel.selection().addListener((InvalidationListener) _ -> appModel.selectTag(tsModel.getSelectedItem()));
+        tsModel.selection().addListener((InvalidationListener) _ -> {
+            Tag sTag = tsModel.getSelectedItem();
+            PseudoClasses.setOn(feedsGrid, "tagged", sTag != null);
+            appModel.selectTag(sTag);
+        });
         addTagButton.setOnAction(e -> addTag());
 
         // Content

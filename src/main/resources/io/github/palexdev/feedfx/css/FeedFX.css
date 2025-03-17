@@ -282,6 +282,10 @@
   -fx-opacity: 0.7;
 }
 
+.root-pane > .layout > .content > StackPane .vfx-grid:tagged .feed-card:read {
+  -fx-opacity: 1.0;
+}
+
 .root-pane > .layout > .content > StackPane .vfx-grid .feed-card > .title {
   -fx-font-family: 'MontSerrat SemiBold';
 }
