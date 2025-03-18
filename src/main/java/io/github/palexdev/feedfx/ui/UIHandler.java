@@ -1,5 +1,8 @@
 package io.github.palexdev.feedfx.ui;
 
+import java.io.IOException;
+import java.net.URL;
+
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 import io.github.palexdev.architectfx.backend.loaders.UILoader;
 import io.github.palexdev.architectfx.backend.loaders.jui.JUIFXLoader;
@@ -10,8 +13,6 @@ import io.github.palexdev.mfxcomponents.window.MFXPlainContent;
 import io.github.palexdev.mfxcomponents.window.popups.MFXPopup;
 import io.github.palexdev.mfxcore.events.bus.IEventBus;
 import io.inverno.core.annotation.Bean;
-import java.io.IOException;
-import java.net.URL;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -76,12 +77,10 @@ public class UIHandler {
         }
 
         trayIcon = new FXTrayIcon.Builder(mainWindow, ICON)
+            .setIconSize(32)
             .applicationTitle("FeedFX")
             .addTitleItem(true)
-            .addExitMenuItem("Exit", _ -> {
-                Platform.exit();
-                System.exit(0);
-            })
+            .addExitMenuItem("Exit", _ -> Platform.exit())
             .show()
             .build();
     }

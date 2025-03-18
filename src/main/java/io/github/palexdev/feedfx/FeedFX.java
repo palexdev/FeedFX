@@ -69,6 +69,7 @@ public class FeedFX extends Application {
         if (stage.getWidth() > 0.0) settings.windowWidth().set(stage.getWidth());
         if (stage.getHeight() > 0.0) settings.windowHeight().set(stage.getHeight());
         bus.publish(new AppEvent.AppCloseEvent());
+        System.exit(0); // AWT tray icon keeps the app running, force close
     }
 
     private Optional<MainModule> bootstrap() {
