@@ -241,6 +241,38 @@
   -fx-background-radius: 12px;
 }
 
+/* Actions */
+.root-pane > .layout > .content > .sidebar > .actions {
+  -fx-alignment: CENTER;
+  -fx-background-color: -md-sys-color-surface-container-high;
+  -fx-background-radius: 12px;
+  -fx-padding: 6px;
+}
+
+.root-pane > .layout > .content > .sidebar > .actions > .mfx-icon-button {
+  -mfx-size: 32.0;
+}
+
+.root-pane > .layout > .content > .sidebar > .actions > .mfx-icon-button .mfx-font-icon {
+  -mfx-size: 24.0;
+}
+
+.root-pane > .layout > .content > .sidebar > .actions > .update .mfx-font-icon {
+  -mfx-description: 'fas-circle-up'
+}
+
+.root-pane > .layout > .content > .sidebar > .actions > .theme .mfx-font-icon {
+  -mfx-description: 'fas-moon'
+}
+
+.root-pane:dark > .layout > .content > .sidebar > .actions > .theme .mfx-font-icon {
+  -mfx-description: 'fas-sun'
+}
+
+.root-pane > .layout > .content > .sidebar > .actions > .settings .mfx-font-icon {
+  -mfx-description: 'fas-gear'
+}
+
 /* Content  */
 .root-pane > .layout > .content > StackPane {
   -fx-background-color: -md-sys-color-surface-container-high;

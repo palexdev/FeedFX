@@ -25,6 +25,8 @@
 .controller: UIController {
   appModel: $appModel$
   mainWindow: $mainWindow$
+  hostServices: $hostServices$
+  themeEngine: $themeEngine$
 }
 
 StackPane {
@@ -128,6 +130,25 @@ StackPane {
           content: SelectableList {
             .cid: 'tagsList'
             styleClass += listOf('tags-list')
+          }
+        }
+
+        # Misc
+        Separator {}
+        HBox {
+          styleClass = listOf('actions')
+
+          MFXIconButton {
+            .cid: 'updateBtn'
+            styleClass += listOf('update')
+          }
+          MFXIconButton {
+            .cid: 'themeBtn'
+            styleClass += listOf('theme')
+          }
+          MFXIconButton {
+            .cid: 'settingsBtn'
+            styleClass += listOf('settings')
           }
         }
       }

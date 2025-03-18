@@ -1,13 +1,16 @@
 package io.github.palexdev.feedfx.di;
 
+import java.util.function.Supplier;
+
 import io.github.palexdev.architectfx.backend.loaders.jui.JUIFXLoader;
 import io.github.palexdev.architectfx.backend.resolver.DefaultResolver;
 import io.github.palexdev.architectfx.backend.resolver.Resolver;
 import io.github.palexdev.feedfx.model.AppModel;
+import io.github.palexdev.feedfx.theming.ThemeEngine;
 import io.github.palexdev.feedfx.ui.AppUILoader;
 import io.inverno.core.annotation.Bean;
 import io.inverno.core.annotation.Wrapper;
-import java.util.function.Supplier;
+import javafx.application.HostServices;
 import javafx.stage.Stage;
 
 @Bean
@@ -15,12 +18,16 @@ import javafx.stage.Stage;
 public class AppUILoaderWrapper implements Supplier<JUIFXLoader> {
     private final JUIFXLoader loader = AppUILoader.instance();
 
-    public AppUILoaderWrapper(AppModel appModel, Stage mainWindow) {
+    public AppUILoaderWrapper(AppModel appModel, Stage mainWindow,
+                              HostServices hostServices, ThemeEngine themeEngine
+    ) {
         loader.config().setResolverFactory(uri -> {
             Resolver.Context ctx = new Resolver.Context(uri);
             ctx.setInjections(
                 "appModel", appModel,
-                "mainWindow", mainWindow
+                "mainWindow", mainWindow,
+                "hostServices", hostServices,
+                "themeEngine", themeEngine
             );
             return new DefaultResolver(ctx);
         });

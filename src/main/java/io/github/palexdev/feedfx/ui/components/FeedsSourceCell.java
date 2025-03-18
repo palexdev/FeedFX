@@ -1,5 +1,8 @@
 package io.github.palexdev.feedfx.ui.components;
 
+import java.awt.image.BufferedImage;
+import java.net.URI;
+
 import io.github.palexdev.feedfx.FeedFX;
 import io.github.palexdev.feedfx.Resources;
 import io.github.palexdev.feedfx.events.AppEvenBus;
@@ -22,8 +25,6 @@ import io.github.palexdev.virtualizedfx.base.VFXContainer;
 import io.github.palexdev.virtualizedfx.cells.CellBaseBehavior;
 import io.github.palexdev.virtualizedfx.cells.VFXLabeledCellSkin;
 import io.github.palexdev.virtualizedfx.cells.VFXSimpleCell;
-import java.awt.image.BufferedImage;
-import java.net.URI;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;

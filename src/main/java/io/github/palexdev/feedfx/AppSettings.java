@@ -1,14 +1,17 @@
 package io.github.palexdev.feedfx;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
+
 import io.github.palexdev.feedfx.theming.ThemeMode;
 import io.github.palexdev.mfxcore.base.beans.Size;
-import io.github.palexdev.mfxcore.settings.BooleanSetting;
 import io.github.palexdev.mfxcore.settings.NumberSetting;
 import io.github.palexdev.mfxcore.settings.Settings;
 import io.github.palexdev.mfxcore.settings.StringSetting;
 import io.inverno.core.annotation.Bean;
-import java.util.Map;
 import javafx.application.Application;
+import org.tinylog.Logger;
 
 @Bean
 public class AppSettings extends Settings {
@@ -21,6 +24,7 @@ public class AppSettings extends Settings {
     private final StringSetting themeMode = registerString("theme.mode", "Theme variation, light/dark", ThemeMode.LIGHT.name());
 
     // Extra
+    private final Properties appProperties;
     private final Application.Parameters parameters;
     private Boolean resetSettings = null;
 
@@ -28,14 +32,23 @@ public class AppSettings extends Settings {
     // Constructors
     //================================================================================
     public AppSettings(Application.Parameters parameters) {
+        this.appProperties = loadProperties();
         this.parameters = parameters;
     }
 
     //================================================================================
     // Methods
     //================================================================================
-    public Size getWindowSize() {
-        return Size.of(windowWidth.get(), windowHeight.get());
+    protected Properties loadProperties() {
+        Properties properties = new Properties();
+        try {
+            properties.load(
+                Resources.loadStream("app.properties")
+            );
+        } catch (IOException ex) {
+            Logger.error(ex, "Failed to load app properties");
+        }
+        return properties;
     }
 
     //================================================================================
@@ -49,6 +62,14 @@ public class AppSettings extends Settings {
     //================================================================================
     // Getters
     //================================================================================
+    public String getAppVersion() {
+        return appProperties.getOrDefault("version", "0.0.0").toString();
+    }
+
+    public Size getWindowSize() {
+        return Size.of(windowWidth.get(), windowHeight.get());
+    }
+
     public NumberSetting<Double> windowWidth() {
         return windowWidth;
     }

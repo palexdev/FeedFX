@@ -1,11 +1,15 @@
 package io.github.palexdev.feedfx.ui.controllers;
 
+import java.util.Objects;
+
 import io.github.palexdev.architectfx.backend.model.Initializable;
+import io.github.palexdev.feedfx.FeedFX;
 import io.github.palexdev.feedfx.Resources;
 import io.github.palexdev.feedfx.model.AppModel;
 import io.github.palexdev.feedfx.model.Feed;
 import io.github.palexdev.feedfx.model.FeedsSource;
 import io.github.palexdev.feedfx.model.Tag;
+import io.github.palexdev.feedfx.theming.ThemeEngine;
 import io.github.palexdev.feedfx.ui.components.FeedCard;
 import io.github.palexdev.feedfx.ui.components.FeedsSourceCell;
 import io.github.palexdev.feedfx.ui.components.SelectableList;
@@ -14,6 +18,7 @@ import io.github.palexdev.feedfx.ui.components.dialogs.AddFeedDialog;
 import io.github.palexdev.feedfx.ui.components.dialogs.AddSourceDialog;
 import io.github.palexdev.feedfx.ui.components.dialogs.AddTagDialog;
 import io.github.palexdev.feedfx.ui.components.selection.ISelectionModel;
+import io.github.palexdev.feedfx.utils.UIUtils;
 import io.github.palexdev.mfxcomponents.controls.buttons.MFXIconButton;
 import io.github.palexdev.mfxcomponents.controls.fab.MFXFab;
 import io.github.palexdev.mfxcomponents.controls.progress.MFXProgressIndicator;
@@ -21,7 +26,7 @@ import io.github.palexdev.mfxcomponents.theming.enums.PseudoClasses;
 import io.github.palexdev.mfxcore.observables.When;
 import io.github.palexdev.mfxresources.fonts.MFXFontIcon;
 import io.github.palexdev.virtualizedfx.grid.VFXGrid;
-import java.util.Objects;
+import javafx.application.HostServices;
 import javafx.beans.InvalidationListener;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -33,6 +38,8 @@ import javafx.stage.Stage;
 
 public class UIController implements Initializable {
     private AppModel appModel;
+    private HostServices  hostServices;
+    private ThemeEngine themeEngine;
     private Stage mainWindow;
     private StackPane root;
 
@@ -65,6 +72,10 @@ public class UIController implements Initializable {
     private AddFeedDialog addFeedDialog;
     private MFXFab addFeedBtn;
 
+    // Actions
+    private MFXIconButton updateBtn;
+    private MFXIconButton themeBtn;
+    private MFXIconButton settingsBtn;
 
     @Override
     public void initialize() {
@@ -139,6 +150,17 @@ public class UIController implements Initializable {
             .listen();
 
         addFeedBtn.setOnAction(e -> addFeed());
+
+        // Actions
+        updateBtn.disableProperty().bind(FeedFX.updateAvailableProperty().not());
+        updateBtn.setOnAction(_ -> hostServices.showDocument(FeedFX.RELEASES_PAGE));
+        UIUtils.installTooltip(updateBtn, "Update Available", Pos.BOTTOM_CENTER);
+
+        themeBtn.setOnAction(_ -> themeEngine.nextMode());
+        UIUtils.installTooltip(themeBtn, "Switch Theme Mode", Pos.BOTTOM_CENTER);
+
+        settingsBtn.setDisable(true);
+        /* TODO implement settings */
     }
 
     protected void addSource() {
