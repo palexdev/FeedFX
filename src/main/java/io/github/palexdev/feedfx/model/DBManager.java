@@ -288,14 +288,24 @@ public class DBManager {
     }
 
     public boolean deleteSource(FeedsSource source) {
-        try (
-            Connection connection = connect();
-            PreparedStatement stmt = connection.prepareStatement(
+        try (Connection connection = connect()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement dfStmt = connection.prepareStatement(
+                "DELETE FROM feeds WHERE source_id = ?"
+            )) {
+                dfStmt.setInt(1, source.id());
+                dfStmt.executeUpdate();
+            }
+
+            try (PreparedStatement dsStmt = connection.prepareStatement(
                 "DELETE FROM sources WHERE id = ?"
-            )
-        ) {
-            stmt.setInt(1, source.id());
-            stmt.executeUpdate();
+            )) {
+                dsStmt.setInt(1, source.id());
+                dsStmt.executeUpdate();
+            }
+
+            connection.commit();
             return true;
         } catch (SQLException ex) {
             Logger.error("Failed to remove RSS source because:\n{}", ex);
