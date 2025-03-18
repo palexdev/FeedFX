@@ -67,9 +67,14 @@
   -fx-spacing: 12px;
 }
 
-.root-pane > .layout > .window-header > Text {
+.root-pane > .layout > .window-header > VBox > .header {
   -fx-font-family: 'MontSerrat SemiBold';
-  -fx-font-size: 24px;
+  -fx-font-size: 26px;
+  -fx-fill: -md-sys-color-on-surface;
+}
+
+.root-pane > .layout > .window-header > VBox > .version {
+  -fx-font-family: 'MontSerrat Medium';
   -fx-fill: -md-sys-color-on-surface;
 }
 

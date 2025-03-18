@@ -24,6 +24,7 @@
 
 .controller: UIController {
   appModel: $appModel$
+  settings: $appSettings$
   mainWindow: $mainWindow$
   hostServices: $hostServices$
   themeEngine: $themeEngine$
@@ -48,7 +49,17 @@ StackPane {
         styleClass = listOf('logo')
       }
 
-      Text::('FeedFX') {}
+      VBox {
+        alignment: Pos.CENTER
+        spacing: 4.0
+        Text::('FeedFX') {
+          styleClass += listOf('header')
+        }
+        Text {
+          .cid: 'versionText'
+          styleClass += listOf('version')
+        }
+      }
 
       Region {
         .cid: 'separator'

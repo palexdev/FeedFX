@@ -3,6 +3,7 @@ package io.github.palexdev.feedfx.ui.controllers;
 import java.util.Objects;
 
 import io.github.palexdev.architectfx.backend.model.Initializable;
+import io.github.palexdev.feedfx.AppSettings;
 import io.github.palexdev.feedfx.FeedFX;
 import io.github.palexdev.feedfx.Resources;
 import io.github.palexdev.feedfx.events.AppEvenBus;
@@ -37,16 +38,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class UIController implements Initializable {
     private AppModel appModel;
+    private AppSettings settings;
     private HostServices  hostServices;
     private ThemeEngine themeEngine;
     private Stage mainWindow;
     private StackPane root;
 
     // Header
+    private Text versionText;
     private ImageView iw;
     private Region separator;
     private MFXFontIcon aotIcon;
@@ -99,6 +103,8 @@ public class UIController implements Initializable {
             true
         );
         iw.setImage(logo);
+
+        versionText.setText("v." + settings.getAppVersion());
 
         /* Sidebar */
         sidebar.minWidthProperty().bind(root.widthProperty()
