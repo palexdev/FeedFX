@@ -271,6 +271,11 @@
   -mfx-description: 'fas-circle-up'
 }
 
+.root-pane > .layout > .content > .sidebar > .actions > .update:hover .mfx-font-icon,
+.root-pane > .layout > .content > .sidebar > .actions > .update:pressed .mfx-font-icon {
+  -mfx-color: -md-sys-color-success;
+}
+
 .root-pane > .layout > .content > .sidebar > .actions > .theme .mfx-font-icon {
   -mfx-description: 'fas-moon'
 }
@@ -341,6 +346,10 @@
 
 .root-pane > .layout > .content > StackPane .vfx-grid:tagged .feed-card:read {
   -fx-opacity: 1.0;
+}
+
+.root-pane > .layout > .content > StackPane .vfx-grid .feed-card > .label {
+  -fx-text-fill: -md-sys-color-on-surface;
 }
 
 .root-pane > .layout > .content > StackPane .vfx-grid .feed-card > .title {
