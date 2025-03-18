@@ -1,6 +1,5 @@
 <p align="center">
-  <img alt="FeedFX Logo" width="64" height="64" src="src/main/resources/io/github/palexdev/feedfx/assets/logo.png" style="vertical-align: middle;"/>
-  <span style="font-size: 48px; font-weight: bold; vertical-align: middle; display: inline-block; line-height: 64px; margin-left: 12px; translate: 0 4px">FeedFX</span>
+  <img alt="FeedFX Logo" src="screens/logo.svg"/>
 </p>
 
 <p align="center">
