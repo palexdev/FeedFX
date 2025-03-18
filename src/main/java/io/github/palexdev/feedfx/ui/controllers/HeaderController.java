@@ -36,8 +36,8 @@ public class HeaderController {
     public void handleWindow(Region root, Region dndArea) {
         StageUtils.makeDraggable(window, dndArea);
         StageResizer resizer = new StageResizer(root, window);
-        resizer.setMinWidthFunction(r -> r.prefWidth(-1));
-        resizer.setMinHeightFunction(r -> r.prefHeight(-1));
+        resizer.setMinWidthFunction(r -> r.minWidth(-1));
+        resizer.setMinHeightFunction(r -> r.minHeight(-1));
         resizer.makeResizable();
     }
 

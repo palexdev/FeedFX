@@ -32,8 +32,8 @@
 
 StackPane {
   .cid: 'root'
-  prefWidth: 900.0
-  prefHeight: 600.0
+  this.setMinSize(800.0, 600.0)
+  this.setPrefSize(1000.0, 600.0)
   styleClass = listOf('root-pane')
   stylesheets = listOf(url('css/FeedFX.css'))
 
