@@ -1,11 +1,15 @@
 package io.github.palexdev.feedfx.ui.controllers;
 
+import java.util.Optional;
+
+import io.github.palexdev.feedfx.events.AppEvenBus;
+import io.github.palexdev.feedfx.events.UIEvent;
 import io.github.palexdev.mfxcomponents.theming.enums.PseudoClasses;
 import io.github.palexdev.mfxcore.base.beans.Size;
 import io.github.palexdev.mfxcore.observables.When;
 import io.github.palexdev.mfxcore.utils.fx.StageUtils;
 import io.github.palexdev.mfxcore.utils.resize.StageResizer;
-import java.util.Optional;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -46,7 +50,7 @@ public class HeaderController {
     }
 
     public void handleMinimize(Node minimize) {
-        minimize.setOnMouseClicked(e -> window.setIconified(true));
+        minimize.setOnMouseClicked(e -> AppEvenBus.instance().publish(new UIEvent.MinimizeEvent()));
     }
 
     public void handleMaximize(Node maximize) {
@@ -54,7 +58,7 @@ public class HeaderController {
     }
 
     public void handleClose(Node close) {
-        close.setOnMouseClicked(e -> window.hide());
+        close.setOnMouseClicked(e -> Platform.exit());
     }
 
     private void handleMaximize() {

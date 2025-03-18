@@ -17,6 +17,8 @@ public abstract class UIEvent extends Event {
     // Impl
     //================================================================================
 
+    public static class MinimizeEvent extends UIEvent {}
+
     public static class NotifyEvent extends UIEvent {
         public NotifyEvent(String message) {
             super(message);

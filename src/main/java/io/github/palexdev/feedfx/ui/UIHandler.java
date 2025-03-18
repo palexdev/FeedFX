@@ -57,6 +57,7 @@ public class UIHandler {
         this.mainWindow = mainWindow;
         this.themeEngine = themeEngine;
         bus.subscribe(AppEvent.AppReadyEvent.class, _ -> init());
+        bus.subscribe(UIEvent.MinimizeEvent.class, _ -> minimize());
         bus.subscribe(UIEvent.NotifyEvent.class, this::notify);
         bus.subscribe(UIEvent.ThemeSwitchEvent.class, _ -> onThemeSwitched());
     }
@@ -112,6 +113,14 @@ public class UIHandler {
         mainWindow.setIconified(false);
         mainWindow.toFront();
         popup.show(mainWindow, Pos.CENTER);
+    }
+
+    private void minimize() {
+        if (trayIcon != null) {
+            mainWindow.hide();
+            return;
+        }
+        mainWindow.setIconified(true);
     }
 
     private void onThemeSwitched() {
