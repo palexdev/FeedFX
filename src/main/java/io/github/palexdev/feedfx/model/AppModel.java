@@ -1,5 +1,12 @@
 package io.github.palexdev.feedfx.model;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import io.github.palexdev.architectfx.backend.utils.Async;
 import io.github.palexdev.feedfx.events.ModelEvent;
 import io.github.palexdev.feedfx.events.UIEvent;
@@ -7,12 +14,6 @@ import io.github.palexdev.feedfx.utils.RefineList;
 import io.github.palexdev.mfxcore.events.bus.IEventBus;
 import io.inverno.core.annotation.Bean;
 import io.inverno.core.annotation.BeanSocket;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -247,6 +248,10 @@ public class AppModel {
     }
 
     protected void setUpdating(boolean updating) {
-        this.updating.set(updating);
+        if (!Platform.isFxApplicationThread()) {
+            Platform.runLater(() -> this.updating.set(updating));
+        } else {
+            this.updating.set(updating);
+        }
     }
 }
