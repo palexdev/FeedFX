@@ -28,9 +28,17 @@ VBox {
     .cid: 'nameField'
     promptText: 'Name'
   }
-  TextField {
-    .cid: 'colorField'
-    promptText: 'Color (hex format)'
+  HBox {
+    styleClass = listOf('field-box')
+    MFXFontIcon {
+      .cid: 'colorIcon'
+      description: 'fas-square'
+      size: 24.0
+    }
+    TextField {
+      .cid: 'colorField'
+      promptText: 'Color (hex format)'
+    }
   }
 
   HBox {

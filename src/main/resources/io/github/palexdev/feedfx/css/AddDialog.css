@@ -30,7 +30,16 @@
   -mfx-size: 32px;
 }
 
-.add-dialog > .text-field {
+.add-dialog > .field-box {
+  -fx-alignment: CENTER_LEFT;
+  -fx-background-color: -md-sys-color-surface-container-high;
+  -fx-background-insets: -2px;
+  -fx-background-radius: 6px;
+  -fx-padding: 8px;
+  -fx-spacing: 12px;
+}
+
+.add-dialog .text-field {
   -fx-background-color: -md-sys-color-surface-container-high;
   -fx-background-insets: -2px;
   -fx-background-radius: 6px;
@@ -39,6 +48,10 @@
   -fx-prompt-text-fill: -md-sys-color-on-surface;
   -fx-text-fill: -md-sys-color-on-surface;
   -fx-padding: 8px;
+}
+
+.add-dialog > .field-box > .text-field {
+  -fx-padding: 0px;
 }
 
 .add-dialog > .actions {
