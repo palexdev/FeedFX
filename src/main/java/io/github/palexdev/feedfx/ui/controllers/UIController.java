@@ -11,9 +11,11 @@ import io.github.palexdev.feedfx.ui.components.FeedsSourceCell;
 import io.github.palexdev.feedfx.ui.components.SelectableList;
 import io.github.palexdev.feedfx.ui.components.TagCell;
 import io.github.palexdev.feedfx.ui.components.dialogs.AddFeedDialog;
+import io.github.palexdev.feedfx.ui.components.dialogs.AddSourceDialog;
 import io.github.palexdev.feedfx.ui.components.dialogs.AddTagDialog;
 import io.github.palexdev.feedfx.ui.components.selection.ISelectionModel;
 import io.github.palexdev.mfxcomponents.controls.buttons.MFXIconButton;
+import io.github.palexdev.mfxcomponents.controls.fab.MFXFab;
 import io.github.palexdev.mfxcomponents.controls.progress.MFXProgressIndicator;
 import io.github.palexdev.mfxcomponents.theming.enums.PseudoClasses;
 import io.github.palexdev.mfxcore.observables.When;
@@ -45,7 +47,7 @@ public class UIController implements Initializable {
     // Sidebar
     private VBox sidebar;
 
-    private AddFeedDialog addFeedDialog;
+    private AddSourceDialog addSrcDialog;
     private MFXIconButton addSrcButton;
     private MFXIconButton syncButton;
     private MFXIconButton showReadButton;
@@ -59,6 +61,10 @@ public class UIController implements Initializable {
     private StackPane scrim;
     private MFXProgressIndicator syncIndicator;
     private VFXGrid<Feed, FeedCard> feedsGrid;
+
+    private AddFeedDialog addFeedDialog;
+    private MFXFab addFeedBtn;
+
 
     @Override
     public void initialize() {
@@ -98,7 +104,7 @@ public class UIController implements Initializable {
             }
             appModel.selectSource(ssModel.getSelectedItem());
         });
-        addSrcButton.setOnAction(e -> addFeed());
+        addSrcButton.setOnAction(e -> addSource());
         syncButton.setOnAction(e -> appModel.refresh(true));
         showReadButton.setOnAction(e -> appModel.setShowRead(showReadButton.isSelected()));
 
@@ -131,15 +137,17 @@ public class UIController implements Initializable {
             .then(_ -> feedsGrid.setClip(null))
             .oneShot()
             .listen();
+
+        addFeedBtn.setOnAction(e -> addFeed());
     }
 
-    protected void addFeed() {
-        if (addFeedDialog == null) {
-            addFeedDialog = new AddFeedDialog();
-            addFeedDialog.setScrimOwner(true);
-            addFeedDialog.setDraggable(true);
+    protected void addSource() {
+        if (addSrcDialog == null) {
+            addSrcDialog = new AddSourceDialog();
+            addSrcDialog.setScrimOwner(true);
+            addSrcDialog.setDraggable(true);
         }
-        addFeedDialog.showAndWaitOpt(mainWindow, Pos.CENTER)
+        addSrcDialog.showAndWaitOpt(mainWindow, Pos.CENTER)
             .ifPresent(t -> appModel.addSource(t.a(), t.b()));
     }
 
@@ -151,5 +159,18 @@ public class UIController implements Initializable {
         }
         addTagDialog.showAndWaitOpt(mainWindow, Pos.CENTER)
             .ifPresent(t -> appModel.addTag(t.a(), t.b()));
+    }
+
+    protected void addFeed() {
+        if (addFeedDialog == null) {
+            addFeedDialog = new AddFeedDialog();
+            addFeedDialog.setScrimOwner(true);
+            addFeedDialog.setDraggable(true);
+        }
+        addFeedDialog.showAndWaitOpt(mainWindow, Pos.CENTER)
+            .ifPresent(f -> {
+                appModel.addFeeds(f);
+                appModel.refresh(true);
+            });
     }
 }

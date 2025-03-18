@@ -1,12 +1,10 @@
 package io.github.palexdev.feedfx.ui.components.dialogs;
 
-import io.github.palexdev.architectfx.backend.utils.Tuple2;
-
-public abstract class AddDialog extends MFXDialog<Tuple2<String, String>> {
+public abstract class AddDialog<R> extends MFXDialog<R> {
     //================================================================================
     // Properties
     //================================================================================
-    protected Tuple2<String, String> result;
+    protected R result;
 
     //================================================================================
     // Abstract Methods
@@ -17,7 +15,7 @@ public abstract class AddDialog extends MFXDialog<Tuple2<String, String>> {
     // Overridden Methods
     //================================================================================
     @Override
-    public Tuple2<String, String> getResult() {
+    public R getResult() {
         return result;
     }
 }

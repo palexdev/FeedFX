@@ -1,0 +1,38 @@
+.combo-box {
+  -fx-background-color: -md-sys-color-surface-container;
+  -fx-background-insets: 1px;
+  -fx-background-radius: 12px;
+  -fx-border-color: -md-sys-color-primary;
+  -fx-border-radius: 12px;
+  -fx-padding: 4px 12px 4px 12px;
+}
+
+.combo-box .src-combo-cell > .label {
+  -fx-font-family: 'MontSerrat Medium';
+  -fx-font-size: 14px;
+  -fx-text-fill: -md-sys-color-on-surface;
+  -fx-padding: 0px 6px 0px 6px;
+}
+
+.combo-box:focused,
+.combo-box:focus-within {
+  -fx-border-width: 0.09375em;
+}
+
+.combo-box:focus-within > .mfx-font-icon {
+  -mfx-color: -md-sys-color-primary
+}
+
+.combo-box .mfx-popup .vfx-scroll-pane {
+  -fx-background-color: -md-sys-color-surface-container-lowest;
+  -fx-background-insets: 1px;
+  -fx-background-radius: 6px;
+  -fx-border-color: -md-sys-color-primary;
+  -fx-border-radius: 6px;
+  -fx-padding: 6px;
+}
+
+.combo-box .mfx-popup .src-combo-cell > .surface > .bg {
+  -fx-background-color: -md-sys-color-primary;
+  -fx-background-radius: 6px;
+}

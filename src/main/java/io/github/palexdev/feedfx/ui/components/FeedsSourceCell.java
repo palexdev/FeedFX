@@ -140,9 +140,10 @@ public class FeedsSourceCell extends VFXSimpleCell<FeedsSource> {
             @Override
             protected void update() {
                 FeedsSource item = getItem();
-                label.setText(getConverter().toString(item));
-
-                if (item != null) {
+                if (item == null) {
+                    label.setText("");
+                } else {
+                    label.setText(getConverter().toString(item));
                     String url = item.link();
                     String baseUrl = getBaseUrl(url);
                     if (baseUrl != null) {

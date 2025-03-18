@@ -90,9 +90,9 @@ public class AppModel {
         setUpdating(true);
         return Async.call(() -> {
             int added = 0;
-            for (FeedsSource source : sources.subList(1, sources.size())) { // Exclude ALL
+            for (FeedsSource source : getSourcesExclAll()) { // Exclude ALL
                 List<Feed> feeds = feedHandler.fetch(source);
-                added += dbManager.addFeeds(feeds.toArray(Feed[]::new));
+                added += addFeeds(feeds.toArray(Feed[]::new));
             }
             return added;
         });
@@ -122,6 +122,10 @@ public class AppModel {
         /* TODO Add in-app browser popup */
         hostServices.showDocument(feed.link());
         markFeedAs(feed, true);
+    }
+
+    public int addFeeds(Feed... feeds) {
+        return dbManager.addFeeds(feeds);
     }
 
     public void markFeedAs(Feed feed, boolean read) {
@@ -210,6 +214,10 @@ public class AppModel {
 
     public RefineList<FeedsSource> getSources() {
         return sources;
+    }
+
+    public List<FeedsSource> getSourcesExclAll() {
+        return sources.subList(1, sources.size());
     }
 
     public ObservableList<Tag> getTags() {

@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
 import org.tinylog.Logger;
 
 /* TODO allow tag edit */
-public class AddTagDialog extends AddDialog {
+public class AddTagDialog extends AddDialog<Tuple2<String, String>> {
 
     //================================================================================
     // Constructors

@@ -2,13 +2,17 @@
   'io.github.palexdev.feedfx.ui.components.SelectableList',
   'io.github.palexdev.feedfx.ui.controllers.UIController',
   'io.github.palexdev.mfxcomponents.controls.buttons.MFXIconButton',
+  'io.github.palexdev.mfxcomponents.controls.fab.MFXFab',
   'io.github.palexdev.mfxcomponents.controls.progress.MFXProgressIndicator',
   'io.github.palexdev.mfxcomponents.controls.progress.ProgressDisplayMode',
+  'io.github.palexdev.mfxcomponents.theming.enums.FABVariants',
   'io.github.palexdev.mfxresources.fonts.MFXFontIcon',
   'io.github.palexdev.virtualizedfx.controls.VFXScrollPane',
   'io.github.palexdev.virtualizedfx.grid.VFXGrid',
   'javafx.scene.control.Label',
   'javafx.scene.control.Separator',
+  'javafx.geometry.Insets',
+  'javafx.geometry.Pos',
   'javafx.scene.image.ImageView',
   'javafx.scene.layout.HBox',
   'javafx.scene.layout.Priority',
@@ -146,6 +150,14 @@ StackPane {
         MFXProgressIndicator {
           .cid: 'syncIndicator'
           displayMode: ProgressDisplayMode.CIRCULAR
+        }
+
+        MFXFab {
+          .cid: 'addFeedBtn'
+          StackPane.setAlignment(this, Pos.BOTTOM_RIGHT)
+          StackPane.setMargin(this, Insets::(0.0, 12.0, 12.0, 0.0) {})
+          variants: FABVariants[FABVariants.SMALL, FABVariants.SECONDARY]
+          icon: MFXFontIcon {}
         }
       }
     }

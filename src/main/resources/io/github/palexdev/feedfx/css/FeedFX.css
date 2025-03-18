@@ -1,5 +1,6 @@
 @import "../fonts/Fonts.css";
 @import "AddDialog.css";
+@import "ComboBox.css";
 @import "TagMenu.css";
 
 * {
@@ -252,6 +253,20 @@
   -fx-background-color: rgba(0, 0, 0, 0.2);
   -fx-background-insets: -12px -6px 0px -6px;
   -fx-background-radius: 12px;
+}
+
+.root-pane > .layout > .content > StackPane > .fab {
+  -fx-opacity: 0.5;
+  transition-property: -fx-opacity;
+  transition-duration: 0.2s;
+}
+
+.root-pane > .layout > .content > StackPane > .fab:hover {
+  -fx-opacity: 1.0;
+}
+
+.root-pane > .layout > .content > StackPane > .fab .mfx-font-icon {
+  -mfx-description: 'fas-plus';
 }
 
 .root-pane > .layout > .content > StackPane > .vfx-scroll-pane {

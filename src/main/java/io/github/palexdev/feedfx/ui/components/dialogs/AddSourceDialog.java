@@ -1,45 +1,38 @@
 package io.github.palexdev.feedfx.ui.components.dialogs;
 
-import java.io.IOException;
-import java.net.URI;
-import java.time.Instant;
-import java.util.Optional;
-
 import io.github.palexdev.architectfx.backend.loaders.UILoader;
 import io.github.palexdev.architectfx.backend.loaders.jui.JUIFXLoader;
 import io.github.palexdev.architectfx.backend.model.Initializable;
+import io.github.palexdev.architectfx.backend.utils.Tuple2;
 import io.github.palexdev.feedfx.Resources;
-import io.github.palexdev.feedfx.model.AppModel;
-import io.github.palexdev.feedfx.model.Feed;
-import io.github.palexdev.feedfx.model.FeedsSource;
 import io.github.palexdev.feedfx.ui.AppUILoader;
-import io.github.palexdev.feedfx.ui.components.ComboBox;
-import io.github.palexdev.feedfx.ui.components.FeedsSourceComboCell;
 import io.github.palexdev.mfxcomponents.controls.buttons.MFXButton;
 import io.github.palexdev.mfxcore.builders.bindings.BooleanBindingBuilder;
+import java.io.IOException;
+import java.net.URI;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 import javafx.stage.WindowEvent;
 import org.tinylog.Logger;
 
-public class AddFeedDialog extends AddDialog<Feed> {
+public class AddSourceDialog extends AddDialog<Tuple2<String, String>> {
 
     //================================================================================
     // Constructors
     //================================================================================
-    public AddFeedDialog() {
+    public AddSourceDialog() {
         loadContent();
     }
 
     //================================================================================
     // Overridden Methods
     //================================================================================
-    @Override
     protected void loadContent() {
         try {
             JUIFXLoader loader = AppUILoader.instance();
             loader.config().setControllerFactory(Controller::new);
-            UILoader.Loaded<Node> res = loader.load(Resources.loadURL("AddFeedDialog.jui"));
+            UILoader.Loaded<Node> res = loader.load(Resources.loadURL("AddSourceDialog.jui"));
             setContent(res.root());
         } catch (IOException ex) {
             Logger.error("Failed to load dialog UI because:\n{}", ex);
@@ -50,47 +43,53 @@ public class AddFeedDialog extends AddDialog<Feed> {
     // Inner Classes
     //================================================================================
     protected class Controller implements Initializable {
-        private AppModel appModel;
+        private StackPane header;
 
-        private ComboBox<FeedsSource> sourcesCombo;
-        private TextField titleField;
-        private TextField linkField;
-        private TextField imgField;
+        private TextField nameField;
+        private TextField urlField;
 
         private MFXButton addButton;
         private MFXButton cancelButton;
 
         @Override
         public void initialize() {
-            sourcesCombo.setCellFactory(FeedsSourceComboCell::new);
-
             addButton.disableProperty().bind(BooleanBindingBuilder.build()
                 .setMapper(() -> !isValid())
-                .addSources(titleField.textProperty(), linkField.textProperty())
-                .addSources(sourcesCombo.getSelectionModel().selection())
+                .addSources(nameField.textProperty(), urlField.textProperty())
                 .get()
             );
             addButton.setOnAction(e -> close());
+
             cancelButton.setOnAction(e -> {
                 reset();
                 close();
             });
 
-            addEventFilter(WindowEvent.WINDOW_SHOWING, _ -> {
-                    reset();
-                    sourcesCombo.getItems().setAll(appModel.getSourcesExclAll());
-                }
-            );
+            addEventFilter(WindowEvent.WINDOW_SHOWING, e -> {
+                makeDraggable(header);
+                reset();
+            });
+        }
+
+        public void reset() {
+            nameField.clear();
+            urlField.clear();
+            result = null;
+        }
+
+        public String getName() {
+            return nameField.getText();
+        }
+
+        public String getURL() {
+            return urlField.getText();
         }
 
         protected boolean isValid() {
-            FeedsSource source = sourcesCombo.getSelectedItem();
-            if (source == null) return false;
+            String name = getName();
+            if (name.isBlank()) return false;
 
-            String title = getTitle();
-            if (title.isBlank()) return false;
-
-            String url = getLink();
+            String url = getURL();
             if (url.isBlank()) return false;
 
             try {
@@ -102,40 +101,9 @@ public class AddFeedDialog extends AddDialog<Feed> {
             return true;
         }
 
-        public void reset() {
-            titleField.clear();
-            linkField.clear();
-            imgField.clear();
-            result = null;
-        }
-
         protected void close() {
-            result = new Feed(
-                getSourceId(),
-                getTitle(),
-                getLink(),
-                getImage(),
-                Instant.now().toEpochMilli()
-            );
+            result = Tuple2.of(getName(), getURL());
             hide();
-        }
-
-        public int getSourceId() {
-            return Optional.ofNullable(sourcesCombo.getSelectedItem())
-                .map(FeedsSource::id)
-                .orElse(-2);
-        }
-
-        public String getTitle() {
-            return titleField.getText();
-        }
-
-        public String getLink() {
-            return linkField.getText();
-        }
-
-        public String getImage() {
-            return imgField.getText();
         }
     }
 }

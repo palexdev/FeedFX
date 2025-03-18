@@ -1,5 +1,4 @@
 .imports {
-  'io.github.palexdev.feedfx.ui.components.ComboBox',
   'io.github.palexdev.mfxcomponents.controls.buttons.MFXButton',
   'io.github.palexdev.mfxresources.fonts.MFXFontIcon',
   'javafx.scene.control.Label',
@@ -10,7 +9,7 @@
   'javafx.scene.layout.VBox'
 }
 
-.controller: AddFeedDialog$Controller {}
+.controller: AddSourceDialog$Controller {}
 
 VBox {
   styleClass = listOf('add-dialog')
@@ -18,27 +17,20 @@ VBox {
 
   StackPane {
     .cid: 'header'
-    Label::('Add Feed') {
+    Label::('Add New Feed Source') {
       graphic: MFXFontIcon {
         description: 'fas-square-rss'
       }
     }
   }
 
-  ComboBox {
-    .cid: 'sourcesCombo'
+  TextField {
+    .cid: 'nameField'
+    promptText: 'Name'
   }
   TextField {
-    .cid: 'titleField'
-    promptText: 'Title'
-  }
-  TextField {
-    .cid: 'linkField'
-    promptText: 'Link'
-  }
-  TextField {
-      .cid: 'imgField'
-      promptText: 'Image Link'
+    .cid: 'urlField'
+    promptText: 'URL'
   }
 
   HBox {
