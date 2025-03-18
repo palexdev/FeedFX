@@ -9,7 +9,7 @@
   'javafx.scene.layout.VBox'
 }
 
-.controller: AddTagDialog$Controller {}
+.controller: AddEditTagDialog$Controller {}
 
 VBox {
   styleClass = listOf('add-dialog')

@@ -231,14 +231,19 @@
   -mfx-size: 24px;
 }
 
-.root-pane > .layout > .content > .sidebar .tags-list .cell > .mfx-icon-button .mfx-font-icon {
+.root-pane > .layout > .content > .sidebar .tags-list .cell > .mfx-icon-button.delete .mfx-font-icon {
   -mfx-description: 'fas-trash';
   -mfx-size: 16px;
 }
 
-.root-pane > .layout > .content > .sidebar .tags-list .cell > .mfx-icon-button > .surface > .bg {
+.root-pane > .layout > .content > .sidebar .tags-list .cell > .mfx-icon-button.delete > .surface > .bg {
   -fx-background-color: -md-sys-color-err;
   -fx-background-radius: 12px;
+}
+
+.root-pane > .layout > .content > .sidebar .tags-list .cell > .mfx-icon-button.edit .mfx-font-icon {
+  -mfx-description: 'fas-pen-to-square';
+  -mfx-size: 16px;
 }
 
 /* Actions */

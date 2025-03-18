@@ -1,13 +1,15 @@
 package io.github.palexdev.feedfx.ui.components.dialogs;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import io.github.palexdev.architectfx.backend.loaders.UILoader;
 import io.github.palexdev.architectfx.backend.loaders.jui.JUIFXLoader;
 import io.github.palexdev.architectfx.backend.model.Initializable;
-import io.github.palexdev.architectfx.backend.utils.Tuple2;
 import io.github.palexdev.feedfx.Resources;
+import io.github.palexdev.feedfx.model.Tag;
 import io.github.palexdev.feedfx.ui.AppUILoader;
+import io.github.palexdev.feedfx.utils.Tuple3;
 import io.github.palexdev.mfxcomponents.controls.buttons.MFXButton;
 import io.github.palexdev.mfxcore.builders.bindings.BooleanBindingBuilder;
 import io.github.palexdev.mfxcore.builders.bindings.ObjectBindingBuilder;
@@ -20,13 +22,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.WindowEvent;
 import org.tinylog.Logger;
 
-/* TODO allow tag edit */
-public class AddTagDialog extends AddDialog<Tuple2<String, String>> {
+public class AddEditTagDialog extends AddDialog<Tuple3<Integer, String, String>> {
+    //================================================================================
+    // Properties
+    //================================================================================
+    private Tag tag;
 
     //================================================================================
     // Constructors
     //================================================================================
-    public AddTagDialog() {
+    public AddEditTagDialog() {
         loadContent();
     }
 
@@ -38,11 +43,15 @@ public class AddTagDialog extends AddDialog<Tuple2<String, String>> {
         try {
             JUIFXLoader loader = AppUILoader.instance();
             loader.config().setControllerFactory(Controller::new);
-            UILoader.Loaded<Node> res = loader.load(Resources.loadURL("AddTagDialog.jui"));
+            UILoader.Loaded<Node> res = loader.load(Resources.loadURL("AddEditTagDialog.jui"));
             setContent(res.root());
         } catch (IOException ex) {
             Logger.error("Failed to load dialog UI because:\n{}", ex);
         }
+    }
+
+    public void setTagToEdit(Tag tag) {
+        this.tag = tag;
     }
 
     //================================================================================
@@ -82,17 +91,25 @@ public class AddTagDialog extends AddDialog<Tuple2<String, String>> {
             addButton.setOnAction(e -> close());
 
             cancelButton.setOnAction(e -> {
-                reset();
+                reset(true);
                 close();
             });
 
             addEventFilter(WindowEvent.WINDOW_SHOWING, _ -> {
                 makeDraggable(header);
-                reset();
+                reset(false);
+                if (tag != null) {
+                    addButton.setText("Edit");
+                    nameField.setText(tag.name());
+                    colorField.setText(tag.color());
+                } else {
+                    addButton.setText("Add");
+                }
             });
         }
 
-        public void reset() {
+        public void reset(boolean full) {
+            if (full) tag = null;
             nameField.clear();
             colorField.setText(randomColor());
             result = null;
@@ -127,7 +144,11 @@ public class AddTagDialog extends AddDialog<Tuple2<String, String>> {
         }
 
         protected void close() {
-            result = Tuple2.of(getName(), getColor());
+            result = Tuple3.of(
+                Optional.ofNullable(tag).map(Tag::id).orElse(null),
+                getName(),
+                getColor()
+            );
             hide();
         }
     }

@@ -32,6 +32,17 @@ public abstract class ModelEvent extends Event {
         }
     }
 
+    public static class EditTagEvent extends ModelEvent {
+        public EditTagEvent(Tag tag) {
+            super(tag);
+        }
+
+        @Override
+        public Tag data() {
+            return (Tag) super.data();
+        }
+    }
+
     public static class DeleteTagEvent extends ModelEvent {
         public DeleteTagEvent(Tag tag) {
             super(tag);

@@ -180,6 +180,14 @@ public class AppModel {
         }
     }
 
+    public boolean editTag(int id, String name, String color) {
+        if (dbManager.editTag(id, name, color)) {
+            tags.setAll(dbManager.getTags());
+            return true;
+        }
+        return false;
+    }
+
     public void selectTag(Tag tag) {
         if (this.selectedTag != tag) {
             this.selectedTag = tag;

@@ -5,6 +5,8 @@ import java.util.Objects;
 import io.github.palexdev.architectfx.backend.model.Initializable;
 import io.github.palexdev.feedfx.FeedFX;
 import io.github.palexdev.feedfx.Resources;
+import io.github.palexdev.feedfx.events.AppEvenBus;
+import io.github.palexdev.feedfx.events.ModelEvent;
 import io.github.palexdev.feedfx.model.AppModel;
 import io.github.palexdev.feedfx.model.Feed;
 import io.github.palexdev.feedfx.model.FeedsSource;
@@ -14,9 +16,9 @@ import io.github.palexdev.feedfx.ui.components.FeedCard;
 import io.github.palexdev.feedfx.ui.components.FeedsSourceCell;
 import io.github.palexdev.feedfx.ui.components.SelectableList;
 import io.github.palexdev.feedfx.ui.components.TagCell;
+import io.github.palexdev.feedfx.ui.components.dialogs.AddEditTagDialog;
 import io.github.palexdev.feedfx.ui.components.dialogs.AddFeedDialog;
 import io.github.palexdev.feedfx.ui.components.dialogs.AddSourceDialog;
-import io.github.palexdev.feedfx.ui.components.dialogs.AddTagDialog;
 import io.github.palexdev.feedfx.ui.components.selection.ISelectionModel;
 import io.github.palexdev.feedfx.utils.UIUtils;
 import io.github.palexdev.mfxcomponents.controls.buttons.MFXIconButton;
@@ -24,6 +26,7 @@ import io.github.palexdev.mfxcomponents.controls.fab.MFXFab;
 import io.github.palexdev.mfxcomponents.controls.progress.MFXProgressIndicator;
 import io.github.palexdev.mfxcomponents.theming.enums.PseudoClasses;
 import io.github.palexdev.mfxcore.observables.When;
+import io.github.palexdev.mfxcore.utils.NumberUtils;
 import io.github.palexdev.mfxresources.fonts.MFXFontIcon;
 import io.github.palexdev.virtualizedfx.grid.VFXGrid;
 import javafx.application.HostServices;
@@ -60,7 +63,7 @@ public class UIController implements Initializable {
     private MFXIconButton showReadButton;
     private SelectableList<FeedsSource, FeedsSourceCell> sourcesList;
 
-    private AddTagDialog addTagDialog;
+    private AddEditTagDialog tagDialog;
     private MFXIconButton addTagButton;
     private SelectableList<Tag, TagCell> tagsList;
 
@@ -100,7 +103,7 @@ public class UIController implements Initializable {
         /* Sidebar */
         sidebar.minWidthProperty().bind(root.widthProperty()
             .multiply(0.3)
-            .map(n -> Math.min(n.doubleValue(), 270.0))
+            .map(n -> NumberUtils.clamp(n.doubleValue(), 300.0, 360.0))
         );
 
         ISelectionModel<FeedsSource> ssModel = sourcesList.getSelectionModel();
@@ -128,7 +131,8 @@ public class UIController implements Initializable {
             PseudoClasses.setOn(feedsGrid, "tagged", sTag != null);
             appModel.selectTag(sTag);
         });
-        addTagButton.setOnAction(e -> addTag());
+        addTagButton.setOnAction(_ -> addEditTag(null));
+        AppEvenBus.instance().subscribe(ModelEvent.EditTagEvent.class, e -> addEditTag(e.data()));
 
         // Content
         scrim.visibleProperty().bind(appModel.updatingProperty());
@@ -173,14 +177,21 @@ public class UIController implements Initializable {
             .ifPresent(t -> appModel.addSource(t.a(), t.b()));
     }
 
-    protected void addTag() {
-        if (addTagDialog == null) {
-            addTagDialog = new AddTagDialog();
-            addTagDialog.setScrimOwner(true);
-            addTagDialog.setDraggable(true);
+    protected void addEditTag(Tag tag) {
+        if (tagDialog == null) {
+            tagDialog = new AddEditTagDialog();
+            tagDialog.setScrimOwner(true);
+            tagDialog.setDraggable(true);
         }
-        addTagDialog.showAndWaitOpt(mainWindow, Pos.CENTER)
-            .ifPresent(t -> appModel.addTag(t.a(), t.b()));
+        tagDialog.setTagToEdit(tag);
+        tagDialog.showAndWaitOpt(mainWindow, Pos.CENTER)
+            .ifPresent(t -> {
+                if (t.a() != null) {
+                    appModel.editTag(t.a(), t.b(), t.c());
+                } else {
+                    appModel.addTag(t.b(), t.c());
+                }
+            });
     }
 
     protected void addFeed() {

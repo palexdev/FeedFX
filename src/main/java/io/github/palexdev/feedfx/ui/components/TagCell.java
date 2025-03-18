@@ -65,6 +65,7 @@ public class TagCell extends VFXSimpleCell<Tag> {
         return new VFXLabeledCellSkin<>(this) {
             MaterialSurface surface = new MaterialSurface(TagCell.this);
             final MFXFontIcon icon = new MFXFontIcon();
+            final MFXIconButton editBtn = new MFXIconButton();
             final MFXIconButton deleteBtn = new MFXIconButton();
 
             {
@@ -76,23 +77,34 @@ public class TagCell extends VFXSimpleCell<Tag> {
                 surface.setManaged(false);
                 getChildren().addFirst(surface);
 
+                deleteBtn.getStyleClass().add("delete");
                 deleteBtn.visibleProperty().bind(hoverProperty());
                 deleteBtn.setManaged(false);
-                deleteBtn.setOnAction(e ->
+                deleteBtn.setOnAction(_ ->
                     AppEvenBus.instance()
                         .publish(
                             new ModelEvent.DeleteTagEvent(getItem())
                         )
                 );
-                getChildren().add(deleteBtn);
 
-                icon.colorProperty().bind(itemProperty().map(t -> Color.web(t.color())));
+                editBtn.getStyleClass().add("edit");
+                editBtn.visibleProperty().bind(hoverProperty());
+                editBtn.setManaged(false);
+                editBtn.setOnAction(_ ->
+                    AppEvenBus.instance()
+                        .publish(
+                            new ModelEvent.EditTagEvent(getItem())
+                        ));
+
+                getChildren().addAll(editBtn, deleteBtn);
                 setGraphic(icon);
+                update();
             }
 
             @Override
             protected void update() {
                 Tag item = getItem();
+                if (icon != null) icon.setColor(Color.web(item.color()));
                 label.setText(getConverter().toString(item));
             }
 
@@ -122,7 +134,10 @@ public class TagCell extends VFXSimpleCell<Tag> {
             protected void layoutChildren(double x, double y, double w, double h) {
                 surface.resizeRelocate(0, 0, getWidth(), getHeight());
 
+                editBtn.autosize();
                 deleteBtn.autosize();
+
+                positionInArea(editBtn, x - deleteBtn.getWidth() - 6.0, y, w, h, 0, HPos.RIGHT, VPos.CENTER);
                 positionInArea(deleteBtn, x, y, w, h, 0, HPos.RIGHT, VPos.CENTER);
 
                 super.layoutChildren(x, y, w, h);

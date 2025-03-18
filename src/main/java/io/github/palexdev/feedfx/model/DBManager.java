@@ -1,14 +1,15 @@
 package io.github.palexdev.feedfx.model;
 
-import io.github.palexdev.feedfx.FeedFX;
-import io.github.palexdev.feedfx.events.AppEvent;
-import io.github.palexdev.mfxcore.events.bus.IEventBus;
-import io.inverno.core.annotation.Bean;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.*;
+
+import io.github.palexdev.feedfx.FeedFX;
+import io.github.palexdev.feedfx.events.AppEvent;
+import io.github.palexdev.mfxcore.events.bus.IEventBus;
+import io.inverno.core.annotation.Bean;
 import org.tinylog.Logger;
 
 @Bean
@@ -353,6 +354,23 @@ public class DBManager {
         } catch (SQLException ex) {
             Logger.error("Failed to add tag because:\n{}", ex);
             return Optional.empty();
+        }
+    }
+
+    public boolean editTag(int id, String name, String color) {
+        try (
+            Connection connection = connect();
+            PreparedStatement stmt = connection.prepareStatement(
+                "UPDATE tags SET name = ?, color = ? WHERE id = ?"
+            )
+        ) {
+            stmt.setString(1, name);
+            stmt.setString(2, color);
+            stmt.setInt(3, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.error("Failed to edit tag because:\n{}", ex);
+            return false;
         }
     }
 
