@@ -31,6 +31,7 @@ public class Feed {
     private final String img;
     private final long date;
     private boolean read;
+    private long readDate;
 
     //================================================================================
     // Constructors
@@ -41,7 +42,8 @@ public class Feed {
         String link,
         String img,
         long date,
-        boolean read
+        boolean read,
+        long readDate
     ) {
         this.sourceId = sourceId;
         this.title = title;
@@ -49,10 +51,11 @@ public class Feed {
         this.img = img;
         this.date = date;
         this.read = read;
+        this.readDate = readDate;
     }
 
     public Feed(int sourceId, String name, String link, String img, long date) {
-        this(sourceId, name, link, img, date, false);
+        this(sourceId, name, link, img, date, false, -1L);
     }
 
     //================================================================================
@@ -143,5 +146,13 @@ public class Feed {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public long readDate() {
+        return readDate;
+    }
+
+    public void setReadDate(long readDate) {
+        this.readDate = readDate;
     }
 }
