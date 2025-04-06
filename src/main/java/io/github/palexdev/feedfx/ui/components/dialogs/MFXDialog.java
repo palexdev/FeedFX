@@ -1,8 +1,10 @@
 package io.github.palexdev.feedfx.ui.components.dialogs;
 
 import io.github.palexdev.mfxcomponents.window.popups.MFXPopup;
+import io.github.palexdev.mfxcore.enums.Zone;
 import io.github.palexdev.mfxcore.observables.When;
 import io.github.palexdev.mfxcore.utils.fx.StageUtils;
+import io.github.palexdev.mfxcore.utils.resize.RegionDragResizer;
 import io.github.palexdev.mfxeffects.MFXScrimEffect;
 import java.util.Optional;
 import javafx.application.Platform;
@@ -13,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -27,6 +30,8 @@ public abstract class MFXDialog<T> extends MFXPopup {
     private double scrimStrength = 0.25;
     private When<?> ownerPosWhen;
     private boolean draggable = false;
+
+    private RegionDragResizer resizer;
 
     //================================================================================
     // Constructors
@@ -125,6 +130,15 @@ public abstract class MFXDialog<T> extends MFXPopup {
             StageUtils.makeDraggable(s, byNode);
     }
 
+    protected void makeResizable() {
+        if (getContent() instanceof Region r) {
+            if (resizer != null) resizer.dispose();
+            resizer = new RegionDragResizer(r);
+            resizer.setAllowedZones(Zone.CENTER_RIGHT, Zone.BOTTOM_CENTER);
+            resizer.makeResizable();
+        }
+    }
+
     //================================================================================
     // Overridden Methods
     //================================================================================
@@ -152,8 +166,10 @@ public abstract class MFXDialog<T> extends MFXPopup {
             .map(Stage.class::cast)
             .ifPresent(_ -> unscrim());
         super.hide();
-        inNestedEventLoop = false;
-        Platform.exitNestedEventLoop(this, null);
+        if (inNestedEventLoop) {
+            inNestedEventLoop = false;
+            Platform.exitNestedEventLoop(this, null);
+        }
     }
 
     public void dispose() {
