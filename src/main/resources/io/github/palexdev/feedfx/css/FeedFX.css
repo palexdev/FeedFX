@@ -42,6 +42,30 @@
   -md-sys-color-on-success-container: #000000;
 }
 
+/* JavaFX Context menus */
+.context-menu {
+  -fx-background-color: -md-sys-color-surface-container-low;
+  -fx-background-insets: 1px;
+  -fx-background-radius: 6px;
+  -fx-border-color: -md-sys-color-primary;
+  -fx-border-radius: 6px;
+  -fx-padding: 4px;
+}
+
+.context-menu .menu-item {
+  -fx-padding: 4px;
+}
+
+.context-menu .menu-item:hover {
+  -fx-background-color: -md-sys-color-surface-container-high;
+  -fx-background-radius: 6px;
+}
+
+.context-menu .menu-item > .label {
+  -fx-font-family: 'MontSerrat Medium';
+  -fx-text-fill: -md-sys-color-on-surface;
+}
+
 /* Overrides */
 .root .mfx-tooltip .content > .plain {
   -fx-background-radius: 6px;
