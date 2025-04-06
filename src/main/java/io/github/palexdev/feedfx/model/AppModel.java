@@ -1,12 +1,5 @@
 package io.github.palexdev.feedfx.model;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import io.github.palexdev.architectfx.backend.utils.Async;
 import io.github.palexdev.feedfx.events.ModelEvent;
 import io.github.palexdev.feedfx.events.UIEvent;
@@ -14,6 +7,11 @@ import io.github.palexdev.feedfx.utils.RefineList;
 import io.github.palexdev.mfxcore.events.bus.IEventBus;
 import io.inverno.core.annotation.Bean;
 import io.inverno.core.annotation.BeanSocket;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.*;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -44,6 +42,8 @@ public class AppModel {
 
     private final BooleanProperty updating = new SimpleBooleanProperty(false);
 
+    private final ScheduledExecutorService scheduler;
+
     //================================================================================
     // Constructors
     //================================================================================
@@ -60,17 +60,19 @@ public class AppModel {
         bus.subscribe(ModelEvent.OpenFeedEvent.class, e -> open(e.data()));
         bus.subscribe(ModelEvent.MarkFeedEvent.class, e -> markFeedAs(e.data(), !e.data().read()));
 
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(
+        scheduler = Executors.newSingleThreadScheduledExecutor(
             Thread.ofVirtual()
                 .name("Feeds Fetch Thread")
                 .factory()
         );
+        // Fetch every hour
         scheduler.scheduleWithFixedDelay(
             () -> refresh(false),
             1L,
             1L,
             TimeUnit.HOURS
         );
+        update();
     }
 
     //================================================================================
@@ -100,10 +102,9 @@ public class AppModel {
     }
 
     protected void update() {
-        Async.call(() -> dbManager.getFeeds(selectedSource, selectedTag, isShowRead()))
+        Async.call(() -> dbManager.getFeeds(selectedSource, selectedTag, isShowRead(), getRecentReadTime()))
             .thenAccept(l -> Platform.runLater(() -> {
                 feeds.setAll(l);
-                feeds.setPredicate(f -> isShowRead() || !f.read()); // Triggers list update
                 setUpdating(false);
             }));
     }
@@ -130,11 +131,22 @@ public class AppModel {
     }
 
     public void markFeedAs(Feed feed, boolean read) {
-        boolean res = dbManager.markFeedAs(feed, read);
+        long readDate = read ? Instant.now().toEpochMilli() : -1L;
+        boolean res = dbManager.markFeedAs(feed, read, readDate);
         // Update only if operation on database is successful
         if (res != feed.read()) {
             feed.setRead(read);
+            feed.setReadDate(readDate);
             update();
+
+            // Update every x minutes (hide recently read feeds)
+            if (read) {
+                scheduler.schedule(
+                    this::update,
+                    5L,
+                    TimeUnit.MINUTES
+                );
+            }
         }
     }
 
@@ -245,6 +257,11 @@ public class AppModel {
     public void setShowRead(boolean showRead) {
         this.showRead = showRead;
         update();
+    }
+
+    public long getRecentReadTime() {
+        // TODO add setting and adjust task
+        return Instant.now().minus(5, ChronoUnit.MINUTES).toEpochMilli();
     }
 
     public boolean isUpdating() {

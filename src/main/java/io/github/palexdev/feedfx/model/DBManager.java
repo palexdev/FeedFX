@@ -1,15 +1,14 @@
 package io.github.palexdev.feedfx.model;
 
+import io.github.palexdev.feedfx.FeedFX;
+import io.github.palexdev.feedfx.events.AppEvent;
+import io.github.palexdev.mfxcore.events.bus.IEventBus;
+import io.inverno.core.annotation.Bean;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.*;
-
-import io.github.palexdev.feedfx.FeedFX;
-import io.github.palexdev.feedfx.events.AppEvent;
-import io.github.palexdev.mfxcore.events.bus.IEventBus;
-import io.inverno.core.annotation.Bean;
 import org.tinylog.Logger;
 
 @Bean
@@ -30,33 +29,37 @@ public class DBManager {
     //================================================================================
     // Methods
     //================================================================================
-    public Collection<Feed> getFeeds(FeedsSource source, Tag tag, boolean showRead) {
-        try (
-            Connection connection = connect();
-            PreparedStatement stmt = connection.prepareStatement("""
-                SELECT f.source_id, f.title, f.link, f.image, f.date, f.isRead FROM feeds f
-                WHERE (? = -1 OR f.source_id = ?) AND (? IS NULL OR f.isRead = ?) AND (
-                    ? IS NULL OR f.id IN (
-                        SELECT feed_id FROM feed_tags WHERE tag_id = ?
-                    )
-                )
-                """)
-        ) {
-
+    private PreparedStatement getFeedsQuery(
+        Connection connection,
+        FeedsSource source, Tag tag, boolean showRead, long recentReadTime
+    ) throws SQLException {
+        PreparedStatement stmt;
+        if (tag != null) {
+            stmt = connection.prepareStatement("""
+                SELECT f.* FROM feeds f WHERE (? = -1 OR f.source_id = ?)
+                AND (f.id IN (SELECT feed_id FROM feed_tags WHERE tag_id = ?))
+                """);
             stmt.setInt(1, source.id());
             stmt.setInt(2, source.id());
-            if (tag != null) {
-                stmt.setNull(3, Types.NULL);
-                stmt.setNull(4, Types.NULL);
-                stmt.setInt(5, tag.id());
-                stmt.setInt(6, tag.id());
-            } else {
-                stmt.setBoolean(3, showRead);
-                stmt.setBoolean(4, showRead);
-                stmt.setNull(5, Types.INTEGER);
-                stmt.setNull(6, Types.INTEGER);
-            }
+            stmt.setInt(3, tag.id());
+        } else {
+            stmt = connection.prepareStatement("""
+                SELECT f.* FROM feeds f WHERE (? = -1 OR f.source_id = ?)
+                AND (f.isRead = ? OR f.readDate >= ?)
+                """);
+            stmt.setInt(1, source.id());
+            stmt.setInt(2, source.id());
+            stmt.setBoolean(3, showRead);
+            stmt.setLong(4, recentReadTime);
+        }
+        return stmt;
+    }
 
+    public Collection<Feed> getFeeds(FeedsSource source, Tag tag, boolean showRead, long recentReadTime) {
+        try (
+            Connection connection = connect();
+            PreparedStatement stmt = getFeedsQuery(connection, source, tag, showRead, recentReadTime);
+        ) {
             try (ResultSet rs = stmt.executeQuery()) {
                 List<Feed> feeds = new ArrayList<>();
                 while (rs.next()) {
@@ -66,7 +69,8 @@ public class DBManager {
                         rs.getString("link"),
                         rs.getString("image"),
                         rs.getLong("date"),
-                        rs.getBoolean("isRead")
+                        rs.getBoolean("isRead"),
+                        rs.getLong("readDate")
                     ));
                 }
                 return feeds;
@@ -81,7 +85,7 @@ public class DBManager {
         try (
             Connection connection = connect();
             PreparedStatement stmt = connection.prepareStatement(
-                "INSERT OR IGNORE INTO feeds (title, link, image, date, isRead, source_id) VALUES (?, ?, ?, ?, ?, ?)"
+                "INSERT OR IGNORE INTO feeds (title, link, image, date, isRead, readDate, source_id) VALUES (?, ?, ?, ?, ?, ?, ?)"
             )
         ) {
             for (Feed feed : feeds) {
@@ -90,7 +94,8 @@ public class DBManager {
                 stmt.setString(3, feed.img());
                 stmt.setLong(4, feed.date());
                 stmt.setBoolean(5, feed.read());
-                stmt.setInt(6, feed.sourceId());
+                stmt.setLong(6, feed.readDate());
+                stmt.setInt(7, feed.sourceId());
 
                 stmt.addBatch();
             }
@@ -198,15 +203,16 @@ public class DBManager {
         return Collections.emptyList();
     }
 
-    public boolean markFeedAs(Feed feed, boolean read) {
+    public boolean markFeedAs(Feed feed, boolean read, long readDate) {
         try (
             Connection connection = connect();
             PreparedStatement stmt = connection.prepareStatement(
-                "UPDATE feeds SET isRead = ? WHERE link = ?"
+                "UPDATE feeds SET isRead = ?, readDate = ? WHERE link = ?"
             )
         ) {
             stmt.setBoolean(1, read);
-            stmt.setString(2, feed.link());
+            stmt.setLong(2, readDate);
+            stmt.setString(3, feed.link());
             stmt.executeUpdate();
             return read;
         } catch (SQLException ex) {
@@ -422,6 +428,7 @@ public class DBManager {
                     image TEXT NOT NULL,
                     date INTEGER NOT NULL,
                     isRead BOOLEAN DEFAULT FALSE,
+                    readDate INTEGER DEFAULT -1 NOT NULL,
                     source_id INTEGER,
                     FOREIGN KEY (source_id) REFERENCES sources(id)
                 );
