@@ -1,5 +1,7 @@
 package io.github.palexdev.feedfx.ui;
 
+import io.github.palexdev.feedfx.AppSettings;
+import io.github.palexdev.mfxcore.base.beans.Size;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -43,6 +45,7 @@ public class UIHandler {
     //================================================================================
     private final Stage mainWindow;
     private final ThemeEngine themeEngine;
+    private final AppSettings settings;
     private final Image ICON = new Image(
         Resources.loadStream("assets/logo.png")
     );
@@ -53,9 +56,10 @@ public class UIHandler {
     //================================================================================
     // Constructors
     //================================================================================
-    public UIHandler(IEventBus bus, Stage mainWindow, ThemeEngine themeEngine) {
+    public UIHandler(IEventBus bus, Stage mainWindow, ThemeEngine themeEngine, AppSettings settings) {
         this.mainWindow = mainWindow;
         this.themeEngine = themeEngine;
+        this.settings = settings;
         bus.subscribe(AppEvent.AppReadyEvent.class, _ -> init());
         bus.subscribe(UIEvent.MinimizeEvent.class, _ -> minimize());
         bus.subscribe(UIEvent.NotifyEvent.class, this::notify);
@@ -71,7 +75,8 @@ public class UIHandler {
             JUIFXLoader loader = AppUILoader.instance();
             UILoader.Loaded<Node> res = loader.load(ui);
 
-            Scene scene = new Scene((Parent) res.root());
+            Size prevSizes = settings.getWindowSize();
+            Scene scene = new Scene((Parent) res.root(), prevSizes.getWidth(), prevSizes.getHeight());
             scene.setFill(Color.TRANSPARENT);
 
             mainWindow.setScene(scene);
