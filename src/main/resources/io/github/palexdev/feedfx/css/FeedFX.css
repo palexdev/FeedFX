@@ -407,3 +407,7 @@
 .root-pane > .layout > .content > StackPane .vfx-grid .feed-card > .overlay > .mfx-icon-button.read .mfx-font-icon {
   -mfx-description: 'fas-eye';
 }
+
+.root-pane > .layout > .content > StackPane .vfx-grid .feed-card:read > .overlay > .mfx-icon-button.read .mfx-font-icon {
+  -mfx-description: 'fas-eye-slash';
+}
