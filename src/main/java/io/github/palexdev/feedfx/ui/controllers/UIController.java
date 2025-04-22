@@ -1,7 +1,5 @@
 package io.github.palexdev.feedfx.ui.controllers;
 
-import java.util.Objects;
-
 import io.github.palexdev.architectfx.backend.model.Initializable;
 import io.github.palexdev.feedfx.AppSettings;
 import io.github.palexdev.feedfx.FeedFX;
@@ -150,13 +148,6 @@ public class UIController implements Initializable {
             .then(_ -> feedsGrid.autoArrange(1))
             .invalidating(feedsGrid.cellSizeProperty())
             .invalidating(feedsGrid.hSpacingProperty())
-            .listen();
-
-        /* FIXME improve on VirtualizedFX side */
-        When.onInvalidated(feedsGrid.clipProperty())
-            .condition(Objects::nonNull)
-            .then(_ -> feedsGrid.setClip(null))
-            .oneShot()
             .listen();
 
         addFeedBtn.setOnAction(e -> addFeed());

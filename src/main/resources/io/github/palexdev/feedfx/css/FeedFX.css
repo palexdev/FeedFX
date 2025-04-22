@@ -344,7 +344,6 @@
   -vfx-autohide-bars: true;
   -vfx-layout-mode: COMPACT;
   -vfx-smooth-scroll: true;
-  -vfx-vunit-increment: 80px;
 }
 
 .root-pane > .layout > .content > StackPane > .vfx-scroll-pane .viewport {

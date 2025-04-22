@@ -7,8 +7,10 @@
   'io.github.palexdev.mfxcomponents.controls.progress.ProgressDisplayMode',
   'io.github.palexdev.mfxcomponents.theming.enums.FABVariants',
   'io.github.palexdev.mfxresources.fonts.MFXFontIcon',
+  'io.github.palexdev.virtualizedfx.base.VFXScrollable',
   'io.github.palexdev.virtualizedfx.controls.VFXScrollPane',
   'io.github.palexdev.virtualizedfx.grid.VFXGrid',
+  'io.github.palexdev.virtualizedfx.utils.ScrollParams',
   'javafx.scene.control.Label',
   'javafx.scene.control.Separator',
   'javafx.geometry.Insets',
@@ -172,6 +174,7 @@ StackPane {
           content: VFXGrid {
             .cid: 'feedsGrid'
           }
+          VFXScrollable.bindSpeed(this, ScrollParams.cells(0.5), ScrollParams.cells(1.0))
         }
 
         StackPane {
