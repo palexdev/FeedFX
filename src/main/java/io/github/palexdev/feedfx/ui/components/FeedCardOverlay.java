@@ -6,6 +6,8 @@ import io.github.palexdev.feedfx.model.Feed;
 import io.github.palexdev.feedfx.ui.components.FeedCardOverlay.OverlayOwner;
 import io.github.palexdev.feedfx.ui.components.dialogs.TagMenu;
 import io.github.palexdev.mfxcomponents.controls.buttons.MFXIconButton;
+import io.github.palexdev.mfxcomponents.window.MFXPlainContent;
+import io.github.palexdev.mfxcomponents.window.popups.MFXTooltip;
 import io.github.palexdev.mfxcore.observables.When;
 import io.github.palexdev.mfxcore.utils.fx.LayoutUtils;
 import io.github.palexdev.mfxeffects.animations.Animations;
@@ -46,15 +48,21 @@ public class FeedCardOverlay<O extends Parent & OverlayOwner> extends Region {
         browseBtn = new MFXIconButton().outlined();
         browseBtn.getStyleClass().add("browse");
         browseBtn.setOnAction(_ -> browse());
+        MFXTooltip btp = new MFXTooltip(browseBtn).install();
+        btp.setContent(new MFXPlainContent("Open in Browser"));
 
         markAsBtn = new MFXIconButton().outlined();
         markAsBtn.getStyleClass().add("read");
         markAsBtn.setOnAction(_ -> markAs());
+        MFXTooltip mtp = new MFXTooltip(markAsBtn).install();
+        mtp.setContent(new MFXPlainContent());
 
         tagBtn = new MFXIconButton().outlined();
         tagBtn.setIconDescription("fas-tag"); // Workaround for conflict in CSS with checkbox ¯\_(ツ)_/¯
         tagBtn.getStyleClass().add("tag");
         tagBtn.setOnAction(_ -> tag());
+        MFXTooltip ttp = new MFXTooltip(tagBtn).install();
+        ttp.setContent(new MFXPlainContent("Tag Feed"));
 
         tagMenu = new TagMenu();
         When.onInvalidated(tagMenu.contentBoundsProperty())
@@ -72,6 +80,14 @@ public class FeedCardOverlay<O extends Parent & OverlayOwner> extends Region {
     public void show(O owner) {
         if (Animations.isPlaying(hideAnimation))
             hideAnimation.stop();
+
+        // Update "Mark as "tooltip here
+        Feed feed = getFeed();
+        if (feed != null) {
+            ((MFXPlainContent) markAsBtn.getMFXTooltip().getContent()).setText(
+                feed.read() ? "Mark as Unread" : "Mark as Read"
+            );
+        }
 
         setOpacity(0.0);
         owner.addOverlay(this);

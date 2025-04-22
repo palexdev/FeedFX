@@ -166,8 +166,8 @@ public class FeedCard extends VFXCellBase<Feed> implements OverlayOwner {
                             overlay.hide(cell);
                             overlay.setFeedSupplier(null);
                         } else {
-                            overlay.show(cell);
                             overlay.setFeedSupplier(cell::getItem);
+                            overlay.show(cell);
                         }
                     })
                     .executeNow(cell::isHover),
@@ -238,8 +238,8 @@ public class FeedCard extends VFXCellBase<Feed> implements OverlayOwner {
                     .process(e -> {
                         if (overlay.isShowingPopup()) return;
                         if (!overlay.isShowingFor(cell)) {
-                            overlay.show(cell);
                             overlay.setFeedSupplier(cell::getItem);
+                            overlay.show(cell);
                             e.consume();
                         }
                     }),
